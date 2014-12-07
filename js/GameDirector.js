@@ -20,7 +20,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.playerGroup_ = null;
 
   // Psuedo static vars
-  this.ZOMBIE_INITIAL_STATIC_COUNT = 1;
+  this.ZOMBIE_INITIAL_STATIC_COUNT = 50;
   this.ZOMBIE_STATIC_ANIMATION_SPEED = 4;
   this.ZOMBIE_MOBILE_SPEED = 0.8;
   this.ZOMBIE_INITIAL_MOBILE_COUNT = 25;
