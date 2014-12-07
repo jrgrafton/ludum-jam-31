@@ -100,25 +100,28 @@ AAO.GameDirector.prototype.spawnStaticZombies_ = function() {
 
 AAO.GameDirector.prototype.spawnMobileZombies_ = function() {
   for(var i = 0; i < this.ZOMBIE_INITIAL_MOBILE_COUNT; i++) {
-    var radius = this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS;
-    var angle = Math.random() * (2 * Math.PI);
-    distX = Math.cos(angle) * radius;
-    distY = Math.sin(angle) * radius;
-
-    var zombie = this.mobileZombiesGroup_.create(
-        this.game_.world.centerX + distX,
-        this.game_.world.centerY + distY,
-        'zombie');
-
-    var deltaX = zombie.x - this.game_.world.centerX;
-    var deltaY = zombie.y - this.game_.world.centerY;
-    var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI - 90;
-    zombie.angle = angle;
-    zombie.anchor.set(0.5);
-    zombie.animations.add('walk');
-    zombie.animations.play('walk', 4 * Math.random() + 4, true);
-    zombie.visible = true;
+    this.spawnMobileZombie_();
   }
+}
+AAO.GameDirector.prototype.spawnMobileZombie_ = function() {
+  var radius = this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS;
+  var angle = Math.random() * (2 * Math.PI);
+  distX = Math.cos(angle) * radius;
+  distY = Math.sin(angle) * radius;
+
+  var zombie = this.mobileZombiesGroup_.create(
+      this.game_.world.centerX + distX,
+      this.game_.world.centerY + distY,
+      'zombie');
+
+  var deltaX = zombie.x - this.game_.world.centerX;
+  var deltaY = zombie.y - this.game_.world.centerY;
+  var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI - 90;
+  zombie.angle = angle;
+  zombie.anchor.set(0.5);
+  zombie.animations.add('walk');
+  zombie.animations.play('walk', 4 * Math.random() + 4, true);
+  zombie.visible = true;
 }
 
 AAO.GameDirector.prototype.update = function() {
@@ -233,9 +236,8 @@ AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
   // TODO: Kill zombie
   zombie.kill();
   projectile.kill();
-  if(++this.zombieKills_ % this.ZOMBIE_INITIAL_MOBILE_COUNT === 0) {
-    this.spawnMobileZombies_();
-  }
+  ++this.zombieKills_
+  this.spawnMobileZombie_();
 }
 
 
