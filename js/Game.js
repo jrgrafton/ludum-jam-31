@@ -88,7 +88,7 @@ AAO.Game.prototype.addSprites_ = function() {
   var cachedMask = this.game.cache.getImage('darkness-alpha-mask');
   this.darknessOverlay_ =
       this.game.make.bitmapData(cachedMask.width, cachedMask.height);
-  this.darknessOverlay_.fill(0, 0, 0, 1);
+  this.darknessOverlay_.fill(5, 9, 5, 1);
 
   this.darknessMask_ = this.game.add.image(0, 0,'darkness-alpha-mask');
   this.darknessMask_.visible = false;
