@@ -16,6 +16,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
   // Groups
   this.mobileZombiesGroup_ =  null;
   this.staticZombiesGroup_ = null;
+  this.deadZombiesGroup_ = null;
   this.projectilesGroup_ = null;
   this.playerGroup_ = null;
 
@@ -25,6 +26,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.ZOMBIE_MOBILE_SPEED = 0.8;
   this.ZOMBIE_INITIAL_MOBILE_COUNT = 25;
   this.ZOMBIE_MOBILE_ANIMATION_SPEED = 6;
+  this.ZOMBIE_MOBILE_ANIMATION_DYING_SPEED = 6;
   this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
   this.ZOMBIE_ACTIVATION_CHANCE = 2.0; // Per second chance
 
@@ -49,11 +51,13 @@ AAO.GameDirector.prototype.setupGroups_ = function() {
 
   this.mobileZombiesGroup_ = this.game_.add.group();
   this.staticZombiesGroup_ = this.game_.add.group();
+  this.deadZombiesGroup_ = this.game_.add.group();
   this.projectilesGroup_ = this.game_.add.group();
   this.playerGroup_ = this.game_.add.group();
   this.entityGroup_.add(this.mobileZombiesGroup_);
   this.entityGroup_.add(this.staticZombiesGroup_);
   this.entityGroup_.add(this.projectilesGroup_);
+  this.entityGroup_.add(this.deadZombiesGroup_);
   this.entityGroup_.add(this.playerGroup_);
 }
 
@@ -78,7 +82,7 @@ AAO.GameDirector.prototype.setupTimer_ = function() {
 }
 
 AAO.GameDirector.prototype.spawnPlayer_ = function() {
-  this.player_ = this.projectilesGroup_.create(
+  this.player_ = this.playerGroup_.create(
         this.game_.world.centerX,
         this.game_.world.centerY, 'player');
   this.player_.anchor.set(0.5);
@@ -118,7 +122,7 @@ AAO.GameDirector.prototype.spawnStaticZombies_ = function() {
     var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI - 90;
     zombie.angle = angle;
     zombie.anchor.set(0.5);
-    zombie.animations.add('walk');
+    zombie.animations.add('walk', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]);
     zombie.animations.play('walk', this.ZOMBIE_STATIC_ANIMATION_SPEED * (Math.random() + 1), true);
   }
 }
@@ -144,7 +148,8 @@ AAO.GameDirector.prototype.spawnMobileZombie_ = function() {
   var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI - 90;
   zombie.angle = angle;
   zombie.anchor.set(0.5);
-  zombie.animations.add('walk');
+  zombie.animations.add('walk', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]);
+  zombie.animations.add('dying', [16,17,18,19,20,21,22,23]);
   zombie.animations.play('walk', this.ZOMBIE_MOBILE_ANIMATION_SPEED * (Math.random() + 1), true);
   zombie.visible = true;
 }
@@ -295,7 +300,12 @@ AAO.GameDirector.prototype.reloadGun_ = function() {
 
 AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
   // TODO: Kill zombie
-  zombie.kill();
+  //zombie.kill();
+  //zombie.animations.stop("walk");
+  zombie.animations.play("dying", this.ZOMBIE_MOBILE_ANIMATION_DYING_SPEED);
+  zombie.body.destroy();
+  this.mobileZombiesGroup_.removeChild(zombie);
+  this.deadZombiesGroup_.addChild(zombie);
   projectile.kill();
   ++this.zombieKills_
   this.spawnMobileZombie_();
