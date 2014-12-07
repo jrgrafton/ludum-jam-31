@@ -1,10 +1,12 @@
 AAO.Game = function(game){ 
   console.debug("Game()");
 
+  this.worldGroup_ = null;
   this.sceneryGroup_ = null;
   this.entityGroup_ = null;
   this.gameDirector_ = null;
   this.worldScale = 1;
+  this.gameOver = false;
 };
 
 AAO.Game.prototype.create = function() {
@@ -50,11 +52,13 @@ AAO.Game.prototype.update = function() {
 
       // zoom
     if (this.game.input.keyboard.isDown(Phaser.Keyboard.Q)) {
-      console.log("KEY DOWN");
-        this.worldScale += 0.05;
+      this.worldGroup_.rotation -= 0.05;
+        //this.worldScale += 0.05;
     }
     else if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
-        this.worldScale -= 0.05;
+      this.worldGroup_.rotation += 0.05;
+
+        //this.worldScale -= 0.05;
     }
     
 
@@ -128,17 +132,18 @@ AAO.Game.prototype.manageResume_ = function() {
 AAO.Game.prototype.reset_ = function() {
   console.debug("Game.reset_()");
 };
-AAO.Game.prototype.gameOver = function() {
+AAO.Game.prototype.gameOver_ = function() {
   console.debug("Game.gameOver_()");
-
+  
+  console.log("game over")
+  filter = this.game.add.filter('Pixelate', 10);
+  this.entityGroup_.filters = [filter];
   this.game.add.tween(this).to( 
-  { worldScale: 3 },
+  { worldScale: 5 },
     500,
     Phaser.Easing.EaseOut,
     true
   );
-
-  this.gameOver = true;
 
   //this.game.paused = true;
 };

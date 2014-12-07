@@ -279,7 +279,7 @@ AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
 }
 
 AAO.GameDirector.prototype.zombieHitPlayer_ = function(player, zombie) {
-  this.gameState_.gameOver();
+  this.gameState_.gameOver_();
 }
 
 

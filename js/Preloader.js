@@ -23,6 +23,9 @@ AAO.Preloader.prototype.preload = function() {
   this.load.image('darkness', 'img/darkness.png');
   this.load.image('darkness-alpha-mask', 'img/darkness-alpha-mask.png');
 
+  // Load filters
+  this.game.load.script('filter', 'filters/Pixelate.js');
+
   // Add file loaded callback
   this.load.onFileComplete.add(this.onFileComplete_.bind(this));
 }
