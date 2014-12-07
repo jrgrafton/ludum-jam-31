@@ -1,14 +1,13 @@
 AAO.Game = function(game){ 
   console.debug("Game()");
+  this.gameOver_ = false;
 
   this.worldGroup_ = null;
   this.sceneryGroup_ = null;
   this.entityGroup_ = null;
   this.gameDirector_ = null;
-  this.worldScale = 1;
-  this.gameOver = false;
-
-  this.gameOverOverlay_ = null;
+  this.worldScale_ = 1;
+  this.gameOver_Overlay_ = null;
 };
 
 AAO.Game.prototype.create = function() {
@@ -46,6 +45,7 @@ AAO.Game.prototype.create = function() {
 }
 AAO.Game.prototype.update = function() {
   console.debug("Game.update()");
+  if(this.gameOver_) return;
 
   if(!window.DEBUG) { window.stats.begin(); }
   this.updateOverlay_();
@@ -90,8 +90,8 @@ AAO.Game.prototype.addSprites_ = function() {
     this.darkness_).anchor.set(0.5);
   this.game.add.image(0, 0,'darkness');
 
-  this.gameOverOverlay_ = this.game.add.sprite(0, 0, "game-over-overlay");
-  this.gameOverOverlay_.visible = false;
+  this.gameOver_Overlay_ = this.game.add.sprite(0, 0, "game-over-overlay");
+  this.gameOver_Overlay_.visible = false;
 
 };
 
@@ -105,11 +105,11 @@ AAO.Game.prototype.manageResume_ = function() {
 AAO.Game.prototype.reset_ = function() {
   console.debug("Game.reset_()");
 };
-AAO.Game.prototype.gameOver_ = function() {
-  console.debug("Game.gameOver_()");
-  if(this.gameOver) return;
+AAO.Game.prototype.gameOver = function() {
+  console.debug("Game.gameOver()");
+  if(this.gameOver_) return;
 
-  this.gameOver = true;
+  this.gameOver_ = true;
   var cameraZoom = 5;
   var animationTime = 2539;
 
@@ -119,22 +119,22 @@ AAO.Game.prototype.gameOver_ = function() {
   var tween = this.game.add.tween(this);
 
   tween.onUpdateCallback(function() {
-    this.game.world.scale.set(this.worldScale);
-    if(this.worldScale > cameraZoom * 0.6) {
+    this.game.world.scale.set(this.worldScale_);
+    if(this.worldScale_ > cameraZoom * 0.6) {
       //this.entityGroup_.filters = null;
-      this.gameOverOverlay_.scale = {x: 1 / this.worldScale, y:1 / this.worldScale}
-      this.gameOverOverlay_.x = this.game.world.centerX - this.gameOverOverlay_.width/2;
-      this.gameOverOverlay_.y = this.game.world.centerY - this.gameOverOverlay_.height/2;
+      this.gameOver_Overlay_.scale = {x: 1 / this.worldScale_, y:1 / this.worldScale_}
+      this.gameOver_Overlay_.x = this.game.world.centerX - this.gameOver_Overlay_.width/2;
+      this.gameOver_Overlay_.y = this.game.world.centerY - this.gameOver_Overlay_.height/2;
 
-      this.gameOverOverlay_.visible = true;
+      this.gameOver_Overlay_.visible = true;
       tween.stop();
       this.game.paused = true;
-      this.gameOverRestart_();
+      this.gameOver_Restart_();
     }
   }.bind(this));
 
   tween.to(
-    { worldScale: cameraZoom },
+    { worldScale_: cameraZoom },
     animationTime,
     Phaser.Easing.Default,
     true

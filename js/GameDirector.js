@@ -305,9 +305,6 @@ AAO.GameDirector.prototype.reloadGun_ = function() {
 }
 
 AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
-  // TODO: Kill zombie
-  //zombie.kill();
-  //zombie.animations.stop("walk");
   zombie.animations.play("dying", this.ZOMBIE_MOBILE_ANIMATION_DYING_SPEED);
   zombie.body.destroy();
   this.mobileZombiesGroup_.removeChild(zombie);
@@ -318,7 +315,7 @@ AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
 }
 
 AAO.GameDirector.prototype.zombieHitPlayer_ = function(player, zombie) {
-  this.gameState_.gameOver_();
+  this.gameState_.gameOver();
 }
 
 
