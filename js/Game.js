@@ -7,6 +7,8 @@ AAO.Game = function(game){
   this.gameDirector_ = null;
   this.worldScale = 1;
   this.gameOver = false;
+
+  this.gameOverOverlay_ = null;
 };
 
 AAO.Game.prototype.create = function() {
@@ -65,7 +67,7 @@ AAO.Game.prototype.updateOverlay_ = function() {
   var deltaY = this.game.world.centerY - this.game.input.y ;
   var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI - 90;
 
-  //this.darknessMask_.angle = angle;
+  this.darknessMask_.angle = angle;
 };
 
 AAO.Game.prototype.addSprites_ = function() {
@@ -77,7 +79,7 @@ AAO.Game.prototype.addSprites_ = function() {
       this.game.make.bitmapData(cachedMask.width, cachedMask.height);
   this.darknessOverlay_.fill(5, 9, 5, 1);
 
-  /*this.darknessMask_ = this.game.add.image(
+  this.darknessMask_ = this.game.add.image(
       this.game.world.centerX,
       this.game.world.centerY,
       'darkness-alpha-mask');
@@ -86,7 +88,11 @@ AAO.Game.prototype.addSprites_ = function() {
     this.game.world.centerX,
     this.game.world.centerY,
     this.darkness_).anchor.set(0.5);
-  this.game.add.image(0, 0,'darkness'); */
+  this.game.add.image(0, 0,'darkness');
+
+  this.gameOverOverlay_ = this.game.add.sprite(0, 0, "game-over-overlay");
+  this.gameOverOverlay_.visible = false;
+
 };
 
 AAO.Game.prototype.managePause_ = function() {
@@ -104,7 +110,7 @@ AAO.Game.prototype.gameOver_ = function() {
   if(this.gameOver) return;
 
   this.gameOver = true;
-  var cameraZoom = 7;
+  var cameraZoom = 5;
   var animationTime = 2539;
 
   // Zoom and pixelate
@@ -116,6 +122,12 @@ AAO.Game.prototype.gameOver_ = function() {
     this.game.world.scale.set(this.worldScale);
     if(this.worldScale > cameraZoom * 0.6) {
       //this.entityGroup_.filters = null;
+      this.gameOverOverlay_.scale = {x: 1 / this.worldScale, y:1 / this.worldScale}
+      this.gameOverOverlay_.x = this.game.world.centerX - this.gameOverOverlay_.width/2;
+      this.gameOverOverlay_.y = this.game.world.centerY - this.gameOverOverlay_.height/2;
+
+      this.gameOverOverlay_.visible = true;
+      tween.stop();
       this.game.paused = true;
       this.gameOverRestart_();
     }

@@ -34,6 +34,8 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.GUN_COCK_SPEED = 50; // Min number of ms between shots
   this.GUN_RELOAD_TIME = 200;
   this.GUN_CLIP_SIZE = 7;
+
+  this.PLAYER_ANIMATION_SPEED = 24;
 }
 
 AAO.GameDirector.prototype.init = function() {
@@ -85,9 +87,11 @@ AAO.GameDirector.prototype.spawnPlayer_ = function() {
   this.player_ = this.playerGroup_.create(
         this.game_.world.centerX,
         this.game_.world.centerY, 'player');
-  this.player_.anchor.set(0.5);
+
+  this.player_.animations.add('fire', [1,0]);
+  this.player_.anchor.set(0.5, 0.84);
   this.player_.body.immovable = true;
-  this.player_.body.setSize(90, 90, 0, 0);
+  this.player_.body.setSize(50, 35, 0, 10);
 }
 
 AAO.GameDirector.prototype.spawnZombies_ = function() {
@@ -168,9 +172,9 @@ AAO.GameDirector.prototype.renderDebug_ = function() {
     + "" + ((this.gunReloading_)? 1 : 0), 32, 80);
   this.game_.debug.text('zombie kills: ' + this.zombieKills_, 32, 100);
 
-  this.game_.debug.body(this.player_);
+  //this.game_.debug.body(this.player_);
   this.mobileZombiesGroup_.forEachAlive(function(zombie) {
-    this.game_.debug.body(zombie);
+    //this.game_.debug.body(zombie);
   }.bind(this));
 }
 
@@ -290,6 +294,8 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
       this.GUN_BULLET_SPEED);
 
     this.lastShot_ = this.game_.input.activePointer.timeDown;
+
+    this.player_.animations.play("fire", this.PLAYER_ANIMATION_SPEED);
     --this.gunAmmo_;
   }
 }
