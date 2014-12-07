@@ -41,8 +41,11 @@ AAO.Game.prototype.create = function() {
 }
 AAO.Game.prototype.update = function() {
   console.debug("Game.update()");
+
+  if(!window.DEBUG) { window.stats.begin(); }
   this.updatePlayer_();
   this.gameDirector_.update();
+  if(!window.DEBUG) { window.stats.end(); }
 }
 
 AAO.Game.prototype.updatePlayer_ = function() {

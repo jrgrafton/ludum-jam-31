@@ -16,7 +16,6 @@ AAO.Preloader.prototype.preload = function() {
   this.load.image('bullet', 'img/bullet.jpg');
   this.load.image('player', 'img/player.jpg');
   this.load.spritesheet('zombie', 'img/zombie.png', 128, 128, 7);
-  this.load.image('mask', 'img/mask.png');
   
   this.load.image('background', 'img/background.jpg');
   this.load.image('darkness-alpha-mask', 'img/darkness-alpha-mask.png');
