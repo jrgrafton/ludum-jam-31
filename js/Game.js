@@ -7,7 +7,7 @@ AAO.Game = function(game){
   this.entityGroup_ = null;
   this.gameDirector_ = null;
   this.worldScale_ = 1;
-  this.gameOver_Overlay_ = null;
+  this.gameOverOverlay_ = null;
 
   this.music_ = null;
   this.sfx_ = null;
@@ -103,8 +103,8 @@ AAO.Game.prototype.addSprites_ = function() {
     this.darkness_).anchor.set(0.5);
   this.game.add.image(0, 0,'darkness');
 
-  this.gameOver_Overlay_ = this.game.add.sprite(0, 0, "game-over-overlay");
-  this.gameOver_Overlay_.visible = false;
+  this.gameOverOverlay_ = this.game.add.sprite(0, 0, "game-over-overlay");
+  this.gameOverOverlay_.visible = false;
 };
 
 AAO.Game.prototype.addAudio_ = function() {
@@ -144,14 +144,18 @@ AAO.Game.prototype.gameOver = function() {
     this.game.world.scale.set(this.worldScale_);
     if(this.worldScale_ > cameraZoom * 0.6) {
       //this.entityGroup_.filters = null;
-      this.gameOver_Overlay_.scale =
+      this.gameOverOverlay_.scale =
           {x: 1 / this.worldScale_, y:1 / this.worldScale_}
-      this.gameOver_Overlay_.x =
-          this.game.world.centerX - this.gameOver_Overlay_.width/2;
-      this.gameOver_Overlay_.y =
-          this.game.world.centerY - this.gameOver_Overlay_.height/2;
-      this.gameOver_Overlay_.visible = true;
+      this.gameOverOverlay_.x =
+          this.game.world.centerX - this.gameOverOverlay_.width/2;
+      this.gameOverOverlay_.y =
+          this.game.world.centerY - this.gameOverOverlay_.height/2;
+      this.gameOverOverlay_.visible = true;
 
+      // Game time for game over overlay
+      var minutes = Math.floor(this.gameDirector_.gameTime / (60 * 1000));
+      var seconds = (this.gameDirector_.gameTime % (60 * 1000)) / 1000;
+      this.gameTimeTextGameOver_.text = minutes + ":" + ("0" + seconds).slice(-2);;
       this.gameTimeTextGameOver_.scale =
           {x: 1 / this.worldScale_, y:1 / this.worldScale_}
       this.gameTimeTextGameOver_.x =

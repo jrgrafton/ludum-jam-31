@@ -34,6 +34,7 @@ AAO.Preloader.prototype.preload = function() {
   this.load.image('clip-empty', 'img/clip-empty.png');
   this.load.image('clip-loaded', 'img/clip-loaded.png');
   this.load.image('smoke', 'img/smoke.png');
+  this.load.spritesheet('clip-sprite', 'img/clip-sprite.png', 71, 37, 2);
 
   // Load filters
   this.game.load.script('filter', 'filters/Pixelate.js');
@@ -103,7 +104,7 @@ AAO.Preloader.prototype.create = function() {
       clearInterval(soundLoadedInterval);
       // start the MainMenu state
       document.body.classList.add("ready");
-      this.state.start('MainMenu');
+      this.state.start('Game');
     }
   }.bind(this), 1000);
 

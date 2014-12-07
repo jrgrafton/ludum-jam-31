@@ -7,20 +7,24 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.player_ = null;
   this.lastUpdate_ = null;
   this.lastShot_ = null;
-  this.gunAmmo_ = 10;
+  this.gunAmmo_ = null;
   this.gunReloading_ = false;
   this.entityGroup_ = entityGroup;
-  this.gameTime_ = 1000 * 60 * 5; // 5 minutes
   this.gameTimeText_ = null;
   this.gameTimeTextGameOver_ = null;
   this.zombieKills_ = 0;
   this.sfx_ = null;
+  this.clipSprites_ = [];
+
+  // Public properties
+  this.gameTime = 1000 * 60 * 5; // 5 minutes
 
   // Groups
   this.mobileZombiesGroup_ =  null;
   this.staticZombiesGroup_ = null;
   this.deadZombiesGroup_ = null;
   this.projectilesGroup_ = null;
+  this.UIGroup_ = null;
   this.playerGroup_ = null;
 
   // Psuedo static vars
@@ -44,13 +48,35 @@ AAO.GameDirector = function(gameState, entityGroup) {
 AAO.GameDirector.prototype.init = function() {
   this.lastUpdate_ = new Date().getTime();
   this.lastShot_ = new Date().getTime();
+  this.setupGroups_();
   this.addText_();
   this.addAudio_();
-  this.setupGroups_();
+  this.addAmmo_();
+
   this.setupPhysics_();
   this.spawnPlayer_();
   this.spawnZombies_();
   this.setupTimer_();
+}
+
+AAO.GameDirector.prototype.addAmmo_ = function() {
+  this.gunAmmo_ = this.GUN_CLIP_SIZE;
+
+  var clipSpriteCache_ = this.game_.cache.getImage('clip-sprite');
+  var xOffset = (clipSpriteCache_.width / 2);
+  for(var i = 0; i < this.GUN_CLIP_SIZE; i++) {
+    xOffset += 50;
+    var yOffset = 50;
+
+    var clip = this.game_.add.sprite(
+        this.game_.width - xOffset,
+        yOffset,
+        "clip-sprite"
+    );
+    clip.animations.add("full", [0]);
+    clip.animations.add("empty", [1]);
+    this.clipSprites_.push(clip);
+  }
 }
 
 AAO.GameDirector.prototype.addText_ = function() {
@@ -186,8 +212,8 @@ AAO.GameDirector.prototype.render = function() {
 }
 
 AAO.GameDirector.prototype.renderDebug_ = function() {
-  var minutes = Math.round(this.gameTime_ / (60 * 1000));
-  var seconds = (this.gameTime_ % (60 * 1000)) / 1000;
+  var minutes = Math.round(this.gameTime / (60 * 1000));
+  var seconds = (this.gameTime % (60 * 1000)) / 1000;
 
   this.game_.debug.text('time: '+ minutes + ":" + seconds, 32, 40);
   this.game_.debug.text('bullets: ' + this.gunAmmo_, 32, 60);
@@ -220,10 +246,10 @@ AAO.GameDirector.prototype.updatePlayer_ = function() {
 }
 
 AAO.GameDirector.prototype.updateTime_ = function() {
-  var minutes = Math.floor(this.gameTime_ / (60 * 1000));
-  var seconds = (this.gameTime_ % (60 * 1000)) / 1000;
+  var minutes = Math.floor(this.gameTime / (60 * 1000));
+  var seconds = (this.gameTime % (60 * 1000)) / 1000;
 
-  this.gameTime_ -= 1000;
+  this.gameTime -= 1000;
   this.gameTimeText_.text = minutes + ":" + ("0" + seconds).slice(-2);;
 }
 
@@ -295,6 +321,9 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
       new Date().getTime() - this.gunReloading_ > this.GUN_RELOAD_TIME) {
     this.gunAmmo_ = this.GUN_CLIP_SIZE;
     this.gunReloading_ = false;
+    for(var i = 0; i < this.clipSprites_.length; i++) {
+      this.clipSprites_[i].animations.play("full");
+    }
   }
 
   if(this.game_.input.activePointer.isDown
@@ -324,6 +353,9 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
     this.lastShot_ = this.game_.input.activePointer.timeDown;
     this.player_.animations.play("fire", this.PLAYER_ANIMATION_SPEED);
     this.sfx_["gunshot"].play();
+    
+
+    this.clipSprites_[this.gunAmmo_ - 1].animations.play("empty");
     --this.gunAmmo_;
   }
 }
