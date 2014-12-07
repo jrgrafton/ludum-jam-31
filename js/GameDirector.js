@@ -15,11 +15,11 @@ AAO.GameDirector = function(game, entityGroup) {
   this.ZOMBIE_MOBILE_SPEED = 0.3;
   this.ZOMBIE_INITIAL_MOBILE_COUNT = 100;
   this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
-  this.ZOMBIE_ACTIVATION_CHANCE = 1; // Per second chance
+  this.ZOMBIE_ACTIVATION_CHANCE = 2.0; // Per second chance
 
-  this.GUN_BULLET_SPEED = 300; // Pixels per second
-  this.GUN_COCK_SPEED = 750; // Min number of ms between shots
-  this.GUN_RELOAD_TIME = 2000;
+  this.GUN_BULLET_SPEED = 250; // Pixels per second
+  this.GUN_COCK_SPEED = 100; // Min number of ms between shots
+  this.GUN_RELOAD_TIME = 1000;
   this.GUN_CLIP_SIZE = 10;
 }
 
