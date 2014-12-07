@@ -18,6 +18,7 @@ AAO.Preloader.prototype.preload = function() {
   this.load.spritesheet('zombie', 'img/zombie.png', 128, 128, 7);
   
   this.load.image('background', 'img/background.jpg');
+  this.load.image('darkness', 'img/darkness.png');
   this.load.image('darkness-alpha-mask', 'img/darkness-alpha-mask.png');
 
   // Add file loaded callback
