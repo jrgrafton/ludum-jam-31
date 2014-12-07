@@ -65,7 +65,6 @@ AAO.Preloader.prototype.preload = function() {
   this.game.load.audio('zombie-groan', ['sound/sfx/zombie_groan.mp3',
     'sound/sfx/zombie_groan.ogg']);
 
-
   // Load buttons
   this.game.load.spritesheet(
       'start-button',
@@ -75,6 +74,10 @@ AAO.Preloader.prototype.preload = function() {
       'restart-button',
       'img/game-over-restart-button.png',
       258, 97);
+
+  // Load fonts
+  this.load.bitmapFont('juice-regular', 'fonts/juice-regular.png',
+        'fonts/juice-regular.xml');
 
   // Add file loaded callback
   this.load.onFileComplete.add(this.onFileComplete_.bind(this));

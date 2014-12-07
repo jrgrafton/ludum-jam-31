@@ -30,6 +30,7 @@ AAO.Game.prototype.create = function() {
   this.addSprites_();
   this.addAudio_();
   this.gameDirector_.init();
+  this.addText_();
 
   // Pause handlers
   this.game.onPause.add(this.managePause_, this);
@@ -50,17 +51,15 @@ AAO.Game.prototype.create = function() {
 AAO.Game.prototype.update = function() {
   console.debug("Game.update()");
   if(this.gameOver_) return;
-
-  if(!window.DEBUG) { window.stats.begin(); }
   this.updateOverlay_();
   this.gameDirector_.update();
 }
 
 AAO.Game.prototype.render = function() {
   this.gameDirector_.render();
-  this.game.debug.text('fps: '+ this.game.time.fps, 32, 20);
-
-  if(!window.DEBUG) { window.stats.end(); }
+  if(window.DEBUG) {
+    this.game.debug.text('fps: '+ this.game.time.fps, 32, 20);
+  }
 }
 
 
@@ -73,6 +72,16 @@ AAO.Game.prototype.updateOverlay_ = function() {
 
   this.darknessMask_.angle = angle;
 };
+
+AAO.Game.prototype.addText_ = function() {
+  this.gameTimeTextGameOver_ = this.game.add.bitmapText(
+    this.game.world.centerX,
+    this.game.world.centerY,
+    'juice-regular',
+    '5:00',
+  60);
+  this.gameTimeTextGameOver_.visible = false;
+}
 
 AAO.Game.prototype.addSprites_ = function() {
   console.debug("Game.addSprites_()");
@@ -135,11 +144,23 @@ AAO.Game.prototype.gameOver = function() {
     this.game.world.scale.set(this.worldScale_);
     if(this.worldScale_ > cameraZoom * 0.6) {
       //this.entityGroup_.filters = null;
-      this.gameOver_Overlay_.scale = {x: 1 / this.worldScale_, y:1 / this.worldScale_}
-      this.gameOver_Overlay_.x = this.game.world.centerX - this.gameOver_Overlay_.width/2;
-      this.gameOver_Overlay_.y = this.game.world.centerY - this.gameOver_Overlay_.height/2;
-
+      this.gameOver_Overlay_.scale =
+          {x: 1 / this.worldScale_, y:1 / this.worldScale_}
+      this.gameOver_Overlay_.x =
+          this.game.world.centerX - this.gameOver_Overlay_.width/2;
+      this.gameOver_Overlay_.y =
+          this.game.world.centerY - this.gameOver_Overlay_.height/2;
       this.gameOver_Overlay_.visible = true;
+
+      this.gameTimeTextGameOver_.scale =
+          {x: 1 / this.worldScale_, y:1 / this.worldScale_}
+      this.gameTimeTextGameOver_.x =
+          this.game.world.centerX - this.gameTimeTextGameOver_.width/2;
+      this.gameTimeTextGameOver_.y =
+          this.game.world.centerY - this.gameTimeTextGameOver_.height/2;
+      this.gameTimeTextGameOver_.visible = true;
+
+
       tween.stop();
       this.game.paused = true;
       this.gameOverRestart_();

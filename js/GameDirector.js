@@ -11,6 +11,8 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.gunReloading_ = false;
   this.entityGroup_ = entityGroup;
   this.gameTime_ = 1000 * 60 * 5; // 5 minutes
+  this.gameTimeText_ = null;
+  this.gameTimeTextGameOver_ = null;
   this.zombieKills_ = 0;
   this.sfx_ = null;
 
@@ -42,12 +44,18 @@ AAO.GameDirector = function(gameState, entityGroup) {
 AAO.GameDirector.prototype.init = function() {
   this.lastUpdate_ = new Date().getTime();
   this.lastShot_ = new Date().getTime();
+  this.addText_();
   this.addAudio_();
   this.setupGroups_();
   this.setupPhysics_();
   this.spawnPlayer_();
   this.spawnZombies_();
   this.setupTimer_();
+}
+
+AAO.GameDirector.prototype.addText_ = function() {
+  this.gameTimeText_ = this.game_.add.bitmapText(50, 50,
+        'juice-regular','5:00', 40);
 }
 
 AAO.GameDirector.prototype.addAudio_ = function() {
@@ -67,10 +75,10 @@ AAO.GameDirector.prototype.setupGroups_ = function() {
   this.deadZombiesGroup_ = this.game_.add.group();
   this.projectilesGroup_ = this.game_.add.group();
   this.playerGroup_ = this.game_.add.group();
+  this.entityGroup_.add(this.deadZombiesGroup_);
   this.entityGroup_.add(this.mobileZombiesGroup_);
   this.entityGroup_.add(this.staticZombiesGroup_);
   this.entityGroup_.add(this.projectilesGroup_);
-  this.entityGroup_.add(this.deadZombiesGroup_);
   this.entityGroup_.add(this.playerGroup_);
 }
 
@@ -172,7 +180,9 @@ AAO.GameDirector.prototype.spawnMobileZombie_ = function() {
 }
 
 AAO.GameDirector.prototype.render = function() {
-  this.renderDebug_();
+  if(window.DEBUG) {
+    this.renderDebug_();
+  }
 }
 
 AAO.GameDirector.prototype.renderDebug_ = function() {
@@ -210,7 +220,11 @@ AAO.GameDirector.prototype.updatePlayer_ = function() {
 }
 
 AAO.GameDirector.prototype.updateTime_ = function() {
+  var minutes = Math.floor(this.gameTime_ / (60 * 1000));
+  var seconds = (this.gameTime_ % (60 * 1000)) / 1000;
+
   this.gameTime_ -= 1000;
+  this.gameTimeText_.text = minutes + ":" + ("0" + seconds).slice(-2);;
 }
 
 AAO.GameDirector.prototype.updateCollisions_ = function() {
