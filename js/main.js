@@ -12,7 +12,7 @@ window.addEventListener('load',function() {
   // initialize the framework
   var game = new Phaser.Game({
       width: 1280,
-      height: 768,
+      height: 720,
       renderer: Phaser.AUTO,
       parent: document.getElementById('game'),
       enableDebug: window.DEBUG

@@ -3,7 +3,7 @@ AAO.Preloader = function(game){
 
   // define width and height of the game
   AAO.GAME_WIDTH = 1280;
-  AAO.GAME_HEIGHT = 768;
+  AAO.GAME_HEIGHT = 720;
 };
 
 AAO.Preloader.prototype.preload = function() {
@@ -17,7 +17,6 @@ AAO.Preloader.prototype.preload = function() {
   this.load.image('player', 'img/player.jpg');
   this.load.spritesheet('zombie', 'img/zombie.png', 128, 128, 7);
   this.load.image('mask', 'img/mask.png');
-  this.load.image('mask-test', 'img/mask-test.png');
   
   this.load.image('background', 'img/background.jpg');
   this.load.image('darkness-alpha-mask', 'img/darkness-alpha-mask.png');

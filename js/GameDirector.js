@@ -11,7 +11,7 @@ AAO.GameDirector = function(game, entityGroup) {
   this.gameTime_ = 1000 * 60 * 5; // 5 minutes
 
   // Psuedo static vars
-  this.ZOMBIE_INITIAL_STATIC_COUNT = 800;
+  this.ZOMBIE_INITIAL_STATIC_COUNT = 500;
   this.ZOMBIE_MOBILE_SPEED = 0.3;
   this.ZOMBIE_INITIAL_MOBILE_COUNT = 100;
   this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
