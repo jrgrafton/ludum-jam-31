@@ -48,39 +48,6 @@ AAO.Game.prototype.update = function() {
   if(!window.DEBUG) { window.stats.begin(); }
   this.updateOverlay_();
   this.gameDirector_.update();
-
-
-      // zoom
-    if (this.game.input.keyboard.isDown(Phaser.Keyboard.Q)) {
-      this.worldGroup_.rotation -= 0.05;
-        //this.worldScale += 0.05;
-    }
-    else if (this.game.input.keyboard.isDown(Phaser.Keyboard.A)) {
-      this.worldGroup_.rotation += 0.05;
-
-        //this.worldScale -= 0.05;
-    }
-    
-
-    if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-      this.game.world.pivot.y -= 5;  
-    }
-    else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-      this.game.world.pivot.y += 5;
-    }
-    if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-      this.game.world.pivot.x -= 5;
-    }
-    else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-      this.game.world.pivot.x += 5;
-    }
-
-
-    // set a minimum and maximum scale value
-    this.worldScale = Phaser.Math.clamp(this.worldScale, 0.25, 3);
-    
-    // set our world scale as needed
-    this.game.world.scale.set(this.worldScale);
 }
 
 AAO.Game.prototype.render = function() {
@@ -137,7 +104,7 @@ AAO.Game.prototype.gameOver_ = function() {
   if(this.gameOver) return;
 
   this.gameOver = true;
-  var cameraZoom = 5;
+  var cameraZoom = 7;
   var animationTime = 2539;
 
   // Zoom and pixelate
@@ -146,8 +113,11 @@ AAO.Game.prototype.gameOver_ = function() {
   var tween = this.game.add.tween(this);
 
   tween.onUpdateCallback(function() {
-    if(this.worldScale > cameraZoom * 0.7) {
+    this.game.world.scale.set(this.worldScale);
+    if(this.worldScale > cameraZoom * 0.6) {
+      //this.entityGroup_.filters = null;
       this.game.paused = true;
+      this.gameOverRestart_();
     }
   }.bind(this));
 
@@ -158,3 +128,27 @@ AAO.Game.prototype.gameOver_ = function() {
     true
   );
 };
+
+AAO.Game.prototype.gameOverRestart_ = function() {
+
+  //this.entityGroup_.filters = null;
+  //this.game.paused = true;
+}
+
+/* 
+* Die list:
+  * Pause music
+  * Play slowdown SFX
+  * Stop timer
+* Reset list:
+  * Start playing rewind SFX
+  * Reset everything
+    * Clear projectiles
+    * Clear active mobile zombies
+    * Clear corpses
+    * Reset timer
+  * Zoom out
+  * Reload gun
+    * Restart gameplay music
+*/
+

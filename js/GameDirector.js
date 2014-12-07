@@ -22,7 +22,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
   // Psuedo static vars
   this.ZOMBIE_INITIAL_STATIC_COUNT = 50;
   this.ZOMBIE_STATIC_ANIMATION_SPEED = 4;
-  this.ZOMBIE_MOBILE_SPEED = 0.8;
+  this.ZOMBIE_MOBILE_SPEED = 0.0;
   this.ZOMBIE_INITIAL_MOBILE_COUNT = 25;
   this.ZOMBIE_MOBILE_ANIMATION_SPEED = 6;
   this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
@@ -245,6 +245,12 @@ AAO.GameDirector.prototype.activateZombie_ = function(zombie) {
 }
 
 AAO.GameDirector.prototype.updateProjectiles_ = function() {
+  // Check for reload request
+  if (this.game_.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)
+      && !this.gunReloading_) {
+      this.reloadGun_();
+  }
+
   // Check for reload complete
   if(this.gunReloading_ &&
       new Date().getTime() - this.gunReloading_ > this.GUN_RELOAD_TIME) {
@@ -257,17 +263,29 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
         && new Date().getTime() - this.lastShot_ > this.GUN_COCK_SPEED
         && this.lastShot_ !== this.game_.input.activePointer.timeDown) {
 
+    if(this.gunAmmo_ === 0) {
+      // TODO: empty gun SFX
+      return;
+    }
+
     var bullet = this.projectilesGroup_.getFirstDead();
     bullet.reset(this.game_.world.centerX, this.game_.world.centerY);
     bullet.anchor.set(0.5);
-    bullet.rotation = this.game_.physics.arcade.angleToPointer(bullet);
-    this.game_.physics.arcade.moveToPointer(bullet, this.GUN_BULLET_SPEED);
+    bullet.rotation = this.game_.physics.arcade.angleToXY(bullet,
+      this.game_.input.x,
+      this.game_.input.y);
+    this.game_.physics.arcade.moveToXY(bullet,
+      this.game_.input.x,
+      this.game_.input.y,
+      this.GUN_BULLET_SPEED);
 
     this.lastShot_ = this.game_.input.activePointer.timeDown;
-    if(--this.gunAmmo_ === 0) {
-      this.gunReloading_ = new Date().getTime();
-    }
+    --this.gunAmmo_;
   }
+}
+
+AAO.GameDirector.prototype.reloadGun_ = function() {
+  this.gunReloading_ = new Date().getTime();
 }
 
 AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
