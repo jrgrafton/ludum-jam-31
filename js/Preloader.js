@@ -104,7 +104,7 @@ AAO.Preloader.prototype.create = function() {
       clearInterval(soundLoadedInterval);
       // start the MainMenu state
       document.body.classList.add("ready");
-      this.state.start('Game');
+      this.state.start('MainMenu');
     }
   }.bind(this), 1000);
 

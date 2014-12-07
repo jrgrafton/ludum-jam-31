@@ -13,6 +13,7 @@ AAO.MainMenu.prototype.create = function() {
 
   this.menuMusic_ = this.game.add.audio('menu-background');
   this.menuMusic_.play('',0,1,true);
+  this.buttonClick_ = this.game.add.audio('select');
 
   this.clouds_.push(this.game.add.image(0,0,"smoke"));
 };
@@ -20,4 +21,5 @@ AAO.MainMenu.prototype.create = function() {
 AAO.MainMenu.prototype.startGame_ = function() {
   this.state.start('Game');
   this.menuMusic_.stop();
+  this.buttonClick_.play();
 };

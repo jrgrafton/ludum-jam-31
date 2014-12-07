@@ -11,6 +11,8 @@ AAO.Game = function(game){
 
   this.music_ = null;
   this.sfx_ = null;
+
+  this.restartButton_ = null;
 };
 
 AAO.Game.prototype.create = function() {
@@ -31,6 +33,7 @@ AAO.Game.prototype.create = function() {
   this.addAudio_();
   this.gameDirector_.init();
   this.addText_();
+  this.addButtons_();
 
   // Pause handlers
   this.game.onPause.add(this.managePause_, this);
@@ -81,6 +84,14 @@ AAO.Game.prototype.addText_ = function() {
     '5:00',
   60);
   this.gameTimeTextGameOver_.visible = false;
+}
+
+AAO.Game.prototype.addButtons_ = function() {
+  console.log("add button");
+  this.restartButton_ = this.game.make.button(400,
+        400, 'start-button',
+        this.gameOverRestart_.bind(this), this, 1, 0, 1, 1);
+
 }
 
 AAO.Game.prototype.addSprites_ = function() {
@@ -167,7 +178,6 @@ AAO.Game.prototype.gameOver = function() {
 
       tween.stop();
       this.game.paused = true;
-      this.gameOverRestart_();
     }
   }.bind(this));
 
@@ -183,7 +193,7 @@ AAO.Game.prototype.gameOver = function() {
 };
 
 AAO.Game.prototype.gameOverRestart_ = function() {
-
+  console.log("restart")
   //this.entityGroup_.filters = null;
   //this.game.paused = true;
 }
