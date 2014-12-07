@@ -8,6 +8,9 @@ AAO.Game = function(game){
   this.gameDirector_ = null;
   this.worldScale_ = 1;
   this.gameOver_Overlay_ = null;
+
+  this.music_ = null;
+  this.sfx_ = null;
 };
 
 AAO.Game.prototype.create = function() {
@@ -25,6 +28,7 @@ AAO.Game.prototype.create = function() {
 
   // Add sprites and enable Physics
   this.addSprites_();
+  this.addAudio_();
   this.gameDirector_.init();
 
   // Pause handlers
@@ -92,8 +96,15 @@ AAO.Game.prototype.addSprites_ = function() {
 
   this.gameOver_Overlay_ = this.game.add.sprite(0, 0, "game-over-overlay");
   this.gameOver_Overlay_.visible = false;
-
 };
+
+AAO.Game.prototype.addAudio_ = function() {
+  this.music_ = this.game.add.audio('gameplay-background');
+  this.music_.play('',0,1,true);
+  this.sfx_ = {};
+  this.sfx_["zombie-shuffle"] = this.game.add.audio('zombie-shuffle');
+  this.sfx_["zombie-shuffle"].play('',0,1,true);
+}
 
 AAO.Game.prototype.managePause_ = function() {
   console.debug("Game.managePause_()");

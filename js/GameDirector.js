@@ -12,6 +12,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.entityGroup_ = entityGroup;
   this.gameTime_ = 1000 * 60 * 5; // 5 minutes
   this.zombieKills_ = 0;
+  this.sfx_ = null;
 
   // Groups
   this.mobileZombiesGroup_ =  null;
@@ -41,11 +42,17 @@ AAO.GameDirector = function(gameState, entityGroup) {
 AAO.GameDirector.prototype.init = function() {
   this.lastUpdate_ = new Date().getTime();
   this.lastShot_ = new Date().getTime();
+  this.addAudio_();
   this.setupGroups_();
   this.setupPhysics_();
   this.spawnPlayer_();
   this.spawnZombies_();
   this.setupTimer_();
+}
+
+AAO.GameDirector.prototype.addAudio_ = function() {
+  this.sfx_ = {};
+  this.sfx_["gunshot"] = this.game_.add.audio('gunshot');
 }
 
 AAO.GameDirector.prototype.setupGroups_ = function() {
@@ -294,8 +301,8 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
       this.GUN_BULLET_SPEED);
 
     this.lastShot_ = this.game_.input.activePointer.timeDown;
-
     this.player_.animations.play("fire", this.PLAYER_ANIMATION_SPEED);
+    this.sfx_["gunshot"].play();
     --this.gunAmmo_;
   }
 }

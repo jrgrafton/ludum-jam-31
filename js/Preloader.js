@@ -26,6 +26,24 @@ AAO.Preloader.prototype.preload = function() {
   // Load filters
   this.game.load.script('filter', 'filters/Pixelate.js');
 
+  // Load audio
+  this.game.load.audio('menu-background',
+    ['sound/music/menu-background.mp3','sound/music/menu-background.ogg']);
+  this.game.load.audio('gameplay-background',
+    ['sound/music/gameplay-background.mp3','sound/music/gameplay-background.ogg']);
+
+  this.game.load.audio('zombie-shuffle',
+    ['sound/sfx/zombie_shuffle.mp3','sound/sfx/zombie_shuffle.ogg']);
+
+  this.game.load.audio('gunshot',
+    ['sound/sfx/gunshot.mp3','sound/sfx/gunshot.ogg']);
+
+
+  /* this.game.load.audio('in-game', ['sounds/in-game.mp3', 'sounds/in-game.ogg']);
+  this.game.load.audio('ping', ['sounds/ping.mp3', 'sounds/ping.ogg']);
+  this.game.load.audio('pong', ['sounds/pong.mp3', 'sounds/pong.ogg']);
+  this.game.load.audio('point', ['sounds/point.mp3', 'sounds/point.ogg']); */
+
   // Add file loaded callback
   this.load.onFileComplete.add(this.onFileComplete_.bind(this));
 }
