@@ -123,17 +123,20 @@ AAO.GameDirector.prototype.spawnZombies_ = function() {
 
 AAO.GameDirector.prototype.update = function() {
   console.debug("GameDirector.update()");
+
   this.updateZombies_();
   this.updateProjectiles_();
   this.updateCollisions_();
-  if(window.DEBUG) {
-    this.updateDebug_();
-  }
-
   this.lastUpdate_ = new Date().getTime();
 }
 
-AAO.GameDirector.prototype.updateDebug_ = function() {
+AAO.GameDirector.prototype.render = function() {
+  console.log("render");
+  this.renderDebug_();
+}
+
+
+AAO.GameDirector.prototype.renderDebug_ = function() {
   var minutes = Math.round(this.gameTime_ / (60 * 1000));
   var seconds = (this.gameTime_ % (60 * 1000)) / 1000;
 
@@ -141,6 +144,11 @@ AAO.GameDirector.prototype.updateDebug_ = function() {
   this.game_.debug.text('bullets: ' + this.gunAmmo_, 32, 60);
   this.game_.debug.text('reloading: '
     + "" + ((this.gunReloading_)? 1 : 0), 32, 80);
+
+  this.mobileZombiesGroup_.forEachAlive(function(zombie) {
+    this.game_.debug.body(zombie);
+  }.bind(this));
+  
 }
 
 AAO.GameDirector.prototype.updateTime_ = function() {
@@ -184,7 +192,6 @@ AAO.GameDirector.prototype.updateZombies_ = function() {
 
 AAO.GameDirector.prototype.activateZombie_ = function(zombie) {
   console.debug("GameDirector.activateZombie()");
-  console.log("activate");
   var haveActivatedZombie = false;
   this.mobileZombiesGroup_.forEachAlive(function(zombie) {
     if(zombie.state !== "active" && !haveActivatedZombie) { 

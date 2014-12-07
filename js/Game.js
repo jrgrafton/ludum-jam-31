@@ -29,14 +29,8 @@ AAO.Game.prototype.create = function() {
   this.game.onPause.add(this.managePause_, this);
   this.game.onResume.add(this.manageResume_, this);
 
-  // Debug functionality
   if(window.DEBUG) {
-    // for fps measuring
     this.game.time.advancedTiming = true;
-    // override the original render() method 
-    this.game.state.onRenderCallback = function() {
-      this.game.debug.text('fps: '+ this.game.time.fps, 32, 20);
-    }
   }
 }
 AAO.Game.prototype.update = function() {
@@ -45,8 +39,15 @@ AAO.Game.prototype.update = function() {
   if(!window.DEBUG) { window.stats.begin(); }
   this.updatePlayer_();
   this.gameDirector_.update();
+}
+
+AAO.Game.prototype.render = function() {
+  this.gameDirector_.render();
+  this.game.debug.text('fps: '+ this.game.time.fps, 32, 20);
+
   if(!window.DEBUG) { window.stats.end(); }
 }
+
 
 AAO.Game.prototype.updatePlayer_ = function() {
   console.debug("Game.updatePlayer_()");
@@ -108,10 +109,10 @@ AAO.Game.prototype.addSprites_ = function() {
         this.darknessMask_.height)
   );
 
-  darknessSprite = this.game.add.image(
+  /* darknessSprite = this.game.add.image(
     this.game.world.centerX,
     this.game.world.centerY,
-    this.darkness_).anchor.set(0.5);
+    this.darkness_).anchor.set(0.5); */
 };
 AAO.Game.prototype.enablePhysics_ = function() {
   console.debug("Game.enablePhysics_()");

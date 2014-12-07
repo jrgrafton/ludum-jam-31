@@ -1,5 +1,5 @@
 window.addEventListener('load',function() {
-  window.DEBUG = false;
+  window.DEBUG = true;
 
   // Turn off logging when not in debugging
   if(!window.DEBUG) {
@@ -21,7 +21,7 @@ window.addEventListener('load',function() {
   var game = new Phaser.Game({
       width: 1280,
       height: 720,
-      renderer: Phaser.AUTO,
+      renderer: Phaser.CANVAS,
       parent: document.getElementById('game'),
       enableDebug: window.DEBUG
   });
@@ -35,3 +35,7 @@ window.addEventListener('load',function() {
   // start the Boot state
   game.state.start('Boot');
 });
+
+function render() {
+  console.log("render")
+}
