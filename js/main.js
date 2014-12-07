@@ -21,7 +21,7 @@ window.addEventListener('load',function() {
   var game = new Phaser.Game({
       width: 1280,
       height: 720,
-      renderer: Phaser.ALL,
+      renderer: Phaser.AUTO,
       parent: document.getElementById('game'),
       enableDebug: window.DEBUG
   });

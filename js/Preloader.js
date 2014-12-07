@@ -13,7 +13,7 @@ AAO.Preloader.prototype.preload = function() {
   this.stage.backgroundColor = '#000';
 
   // Load sprites
-  this.load.image('bullet', 'img/bullet.jpg');
+  this.load.image('bullet', 'img/bullet.png');
   this.load.image('player', 'img/player.png');
   this.load.image('player-shoot', 'img/player-shoot.png');
   this.load.spritesheet('zombie', 'img/zombie.png', 128, 128, 16);
