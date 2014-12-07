@@ -15,7 +15,7 @@ AAO.GameDirector = function(game, entityGroup) {
   this.ZOMBIE_MOBILE_SPEED = 0.3;
   this.ZOMBIE_INITIAL_MOBILE_COUNT = 100;
   this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
-  this.ZOMBIE_ACTIVATION_CHANCE = 0.1; // Per second chance
+  this.ZOMBIE_ACTIVATION_CHANCE = 1; // Per second chance
 
   this.GUN_BULLET_SPEED = 300; // Pixels per second
   this.GUN_COCK_SPEED = 750; // Min number of ms between shots
@@ -131,7 +131,6 @@ AAO.GameDirector.prototype.update = function() {
 }
 
 AAO.GameDirector.prototype.render = function() {
-  console.log("render");
   this.renderDebug_();
 }
 
@@ -210,10 +209,10 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
     this.gunReloading_ = false;
   }
 
-  // Check for bullet fire
   if(this.game_.input.activePointer.isDown
         && !this.gunReloading_
-        && new Date().getTime() - this.lastShot_ > this.GUN_COCK_SPEED) {
+        && new Date().getTime() - this.lastShot_ > this.GUN_COCK_SPEED
+        && this.lastShot_ !== this.game_.input.activePointer.timeDown) {
 
     var bullet = this.projectilesGroup_.getFirstDead();
     bullet.reset(this.game_.world.centerX, this.game_.world.centerY);
@@ -221,7 +220,7 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
     bullet.rotation = this.game_.physics.arcade.angleToPointer(bullet);
     this.game_.physics.arcade.moveToPointer(bullet, 300);
 
-    this.lastShot_ = new Date().getTime();
+    this.lastShot_ = this.game_.input.activePointer.timeDown;
     if(--this.gunAmmo_ === 0) {
       this.gunReloading_ = new Date().getTime();
     }
