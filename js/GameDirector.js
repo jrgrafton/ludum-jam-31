@@ -53,6 +53,10 @@ AAO.GameDirector.prototype.init = function() {
 AAO.GameDirector.prototype.addAudio_ = function() {
   this.sfx_ = {};
   this.sfx_["gunshot"] = this.game_.add.audio('gunshot');
+  this.sfx_["gunshot-empty"] = this.game_.add.audio('gunshot-empty');
+  this.sfx_["gunshot-hit"] = this.game_.add.audio('gunshot-hit');
+  this.sfx_["reload"] = this.game_.add.audio('reload');
+  this.sfx_["zombie-groan"] = this.game_.add.audio('zombie-groan');
 }
 
 AAO.GameDirector.prototype.setupGroups_ = function() {
@@ -99,6 +103,8 @@ AAO.GameDirector.prototype.spawnPlayer_ = function() {
   this.player_.anchor.set(0.5, 0.84);
   this.player_.body.immovable = true;
   this.player_.body.setSize(50, 35, 0, 10);
+  this.player_.scale.x = 0.75;
+  this.player_.scale.y = 0.75;
 }
 
 AAO.GameDirector.prototype.spawnZombies_ = function() {
@@ -258,6 +264,7 @@ AAO.GameDirector.prototype.activateZombie_ = function(zombie) {
       zombie.enableBody = true;
       zombie.body.immovable = true;
       zombie.body.setSize(90, 90, 0, 0);
+      //this.sfx_["zombie-groan"].play();
     }
   }.bind(this));
 }
@@ -282,7 +289,7 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
         && this.lastShot_ !== this.game_.input.activePointer.timeDown) {
 
     if(this.gunAmmo_ === 0) {
-      // TODO: empty gun SFX
+      this.sfx_["gunshot-empty"].play();
       return;
     }
 
@@ -309,6 +316,7 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
 
 AAO.GameDirector.prototype.reloadGun_ = function() {
   this.gunReloading_ = new Date().getTime();
+  this.sfx_["reload"].play();
 }
 
 AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
@@ -319,10 +327,9 @@ AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
   projectile.kill();
   ++this.zombieKills_
   this.spawnMobileZombie_();
+  this.sfx_["gunshot-hit"].play();
 }
 
 AAO.GameDirector.prototype.zombieHitPlayer_ = function(player, zombie) {
   this.gameState_.gameOver();
 }
-
-

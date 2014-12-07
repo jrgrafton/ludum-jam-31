@@ -104,6 +104,8 @@ AAO.Game.prototype.addAudio_ = function() {
   this.sfx_ = {};
   this.sfx_["zombie-shuffle"] = this.game.add.audio('zombie-shuffle');
   this.sfx_["zombie-shuffle"].play('',0,1,true);
+  this.sfx_["slow-down-to-halt"] = this.game.add.audio('slow-down-to-halt');
+  this.sfx_["rewind"] = this.game.add.audio('rewind');
 }
 
 AAO.Game.prototype.managePause_ = function() {
@@ -150,6 +152,9 @@ AAO.Game.prototype.gameOver = function() {
     Phaser.Easing.Default,
     true
   );
+
+  // Play slowdown mp3
+  this.sfx_["slow-down-to-halt"].play();
 };
 
 AAO.Game.prototype.gameOverRestart_ = function() {
