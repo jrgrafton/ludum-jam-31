@@ -4,11 +4,8 @@ AAO.Boot = function(game){ console.debug("Boot()"); };
 AAO.Boot.prototype.preload = function() {
     console.debug("Boot.preload()");
     // preload assets needed for loading screen
-    this.load.image('loading-bar-frame', 'img/loading-bar-frame.png');
+    this.load.image('loading', 'img/loading.png');
     this.load.image('loading-bar', 'img/loading-bar.png');
-    this.load.image('logo', 'img/logo.png');
-    //this.load.bitmapFont('kindly-rewind', 'fonts/kindly-rewind.png',
-    //    'fonts/kindly-rewind.xml');
 }
 
 AAO.Boot.prototype.create = function() {

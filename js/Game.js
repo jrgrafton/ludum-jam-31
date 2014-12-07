@@ -1,7 +1,6 @@
 AAO.Game = function(game){ 
   console.debug("Game()");
 
-  this.player_ = null;
   this.sceneryGroup_ = null;
   this.entityGroup_ = null;
   this.gameDirector_ = null;
@@ -9,6 +8,9 @@ AAO.Game = function(game){
 
 AAO.Game.prototype.create = function() {
   console.debug("Game.create()");
+
+  // Setup camera
+  //game.world.setBounds(-this., -200, 500, 400);
 
   // Initialise physics
   this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -18,11 +20,10 @@ AAO.Game.prototype.create = function() {
   this.entityGroup_ = this.game.add.group();
 
   // Create game director
-  this.gameDirector_ = new AAO.GameDirector(this.game, this.entityGroup_);
+  this.gameDirector_ = new AAO.GameDirector(this, this.entityGroup_);
 
   // Add sprites and enable Physics
   this.addSprites_();
-  this.enablePhysics_();
   this.gameDirector_.init();
 
   // Pause handlers
@@ -37,7 +38,7 @@ AAO.Game.prototype.update = function() {
   console.debug("Game.update()");
 
   if(!window.DEBUG) { window.stats.begin(); }
-  this.updatePlayer_();
+  this.updateOverlay_();
   this.gameDirector_.update();
 }
 
@@ -49,15 +50,12 @@ AAO.Game.prototype.render = function() {
 }
 
 
-AAO.Game.prototype.updatePlayer_ = function() {
+AAO.Game.prototype.updateOverlay_ = function() {
   console.debug("Game.updatePlayer_()");
 
   var deltaX = this.game.world.centerX - this.game.input.x;
   var deltaY = this.game.world.centerY - this.game.input.y ;
   var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI - 90;
-
-  this.player_.angle = angle;
-  this.player_.dirty = true;
 
   //this.darknessMask_.angle = angle;
 };
@@ -66,11 +64,6 @@ AAO.Game.prototype.addSprites_ = function() {
   console.debug("Game.addSprites_()");
 
   this.sceneryGroup_.create(0, 0, 'background');
-  this.player_ = this.sceneryGroup_.create(
-        this.game.world.centerX,
-        this.game.world.centerY, 'player');
-  this.player_.anchor.set(0.5);
-
   var cachedMask = this.game.cache.getImage('darkness-alpha-mask');
   this.darknessOverlay_ =
       this.game.make.bitmapData(cachedMask.width, cachedMask.height);
@@ -87,10 +80,6 @@ AAO.Game.prototype.addSprites_ = function() {
     this.darkness_).anchor.set(0.5);
   this.game.add.image(0, 0,'darkness'); */
 };
-AAO.Game.prototype.enablePhysics_ = function() {
-  console.debug("Game.enablePhysics_()");
-};
-
 
 AAO.Game.prototype.managePause_ = function() {
   console.debug("Game.managePause_()");
@@ -102,6 +91,12 @@ AAO.Game.prototype.manageResume_ = function() {
 AAO.Game.prototype.reset_ = function() {
   console.debug("Game.reset_()");
 };
-AAO.Game.prototype.gameOver_ = function() {
+AAO.Game.prototype.gameOver = function() {
   console.debug("Game.gameOver_()");
+  this.game.paused = true;
+
+  var point = new Phaser.Point(500,500);
+  this.world.scale.setTo(1.5);
+  this.camera.setPosition(1000, 1000);         
+ 
 };
