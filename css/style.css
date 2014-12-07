@@ -33,7 +33,7 @@ body .container {
 }
 body .container #game {
   width: 1280px;
-  height:768px;
+  height:720px;
   margin: 0 auto;
   height: 100%;
   display: table-cell;
