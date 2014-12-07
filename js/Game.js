@@ -129,7 +129,7 @@ AAO.Game.prototype.gameOver = function() {
       this.gameOver_Overlay_.visible = true;
       tween.stop();
       this.game.paused = true;
-      this.gameOver_Restart_();
+      this.gameOverRestart_();
     }
   }.bind(this));
 
