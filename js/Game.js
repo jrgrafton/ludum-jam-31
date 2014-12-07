@@ -59,7 +59,7 @@ AAO.Game.prototype.updatePlayer_ = function() {
   this.player_.angle = angle;
   this.player_.dirty = true;
 
-  //this.darknessMask_.angle = angle;
+  this.darknessMask_.angle = angle;
 };
 
 AAO.Game.prototype.addSprites_ = function() {
@@ -76,7 +76,7 @@ AAO.Game.prototype.addSprites_ = function() {
       this.game.make.bitmapData(cachedMask.width, cachedMask.height);
   this.darknessOverlay_.fill(5, 9, 5, 1);
 
-  /*this.darknessMask_ = this.game.add.image(
+  this.darknessMask_ = this.game.add.image(
       this.game.world.centerX,
       this.game.world.centerY,
       'darkness-alpha-mask');
@@ -85,7 +85,7 @@ AAO.Game.prototype.addSprites_ = function() {
     this.game.world.centerX,
     this.game.world.centerY,
     this.darkness_).anchor.set(0.5);
-  this.game.add.image(0, 0,'darkness'); */
+  this.game.add.image(0, 0,'darkness');
 };
 AAO.Game.prototype.enablePhysics_ = function() {
   console.debug("Game.enablePhysics_()");
