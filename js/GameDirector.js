@@ -83,6 +83,7 @@ AAO.GameDirector.prototype.spawnPlayer_ = function() {
         this.game_.world.centerY, 'player');
   this.player_.anchor.set(0.5);
   this.player_.body.immovable = true;
+  this.player_.body.setSize(90, 90, 0, 0);
 }
 
 AAO.GameDirector.prototype.spawnZombies_ = function() {
@@ -240,6 +241,7 @@ AAO.GameDirector.prototype.activateZombie_ = function(zombie) {
       this.game_.physics.enable(zombie, Phaser.Physics.ARCADE);
       zombie.enableBody = true;
       zombie.body.immovable = true;
+      zombie.body.setSize(90, 90, 0, 0);
     }
   }.bind(this));
 }
