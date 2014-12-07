@@ -32,7 +32,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
 
   this.GUN_BULLET_SPEED = 1000; // Pixels per second
   this.GUN_COCK_SPEED = 50; // Min number of ms between shots
-  this.GUN_RELOAD_TIME = 800;
+  this.GUN_RELOAD_TIME = 200;
   this.GUN_CLIP_SIZE = 7;
 }
 
