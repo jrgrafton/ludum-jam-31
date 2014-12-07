@@ -12,6 +12,9 @@ AAL.Game = function(game){
 AAL.Game.prototype.create = function() {
   console.debug("Game.create()");
 
+  // Initialise physics
+  this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
   // Create darkness group
   this.sceneryGroup_ = this.game.add.group();
   this.entityGroup_ = this.game.add.group();
@@ -40,15 +43,18 @@ AAL.Game.prototype.create = function() {
 }
 AAL.Game.prototype.update = function() {
   console.debug("Game.update()");
-  this.updateMask_();
+  this.updatePlayer_();
   this.gameDirector_.update();
 };
-AAL.Game.prototype.updateMask_ = function() {
-  console.debug("Game.updateMask_()");
+AAL.Game.prototype.updatePlayer_ = function() {
+  console.debug("Game.updatePlayer_()");
 
   var deltaX = this.game.world.centerX - this.game.input.x;
   var deltaY = this.game.world.centerY - this.game.input.y ;
   var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI - 90;
+
+  this.player_.angle = angle;
+  this.player_.dirty = true;
 
   this.darknessMask_.angle = angle;
   this.darkness_.clear();
@@ -73,8 +79,8 @@ AAL.Game.prototype.addSprites_ = function() {
   this.sceneryGroup_.create(0, 0, 'background');
   this.player_ = this.sceneryGroup_.create(
         this.game.world.centerX,
-        this.game.world.centerY, 'player').anchor.set(0.5);
-
+        this.game.world.centerY, 'player');
+  this.player_.anchor.set(0.5);
 
   this.darknessOverlay_ = this.game.make.bitmapData(1820, 1820);
   this.darknessOverlay_.fill(0, 0, 0, 1);

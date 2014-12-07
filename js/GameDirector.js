@@ -3,85 +3,86 @@
  **/
 AAL.GameDirector = function(game, entityGroup) {
   this.game_ = game;
-  this.entityGroup_ = entityGroup;
   this.startTime_ = null;
+  this.entityGroup_ = entityGroup;
+  this.mobileZombiesGroup_ = this.game_.add.group();
+  this.staticZombiesGroup_ = this.game_.add.group();
+  this.projectilesGroup_ = this.game_.add.group();
 
-  this.mobileZombieCount = 0;
-  this.mobileZombies = new LinkedList();
-  this.staticZombies = new LinkedList();
-
-  this.projectiles = new LinkedList();
+  this.entityGroup_.add(this.mobileZombiesGroup_);
+  this.entityGroup_.add(this.staticZombiesGroup_);
+  this.entityGroup_.add(this.projectilesGroup_);
 
   // Psuedo static vars
-  this.INITIAL_ZOMBIE_COUNT = 100;
-  this.ZOMBIE_SPAWN_CHANCE = 0.1; // Chance to spawn per second
-
-  // Spawning only in certain areas
-  this.STATIC_ZOMBIE_SPAWN_AREAS = [
-  // Top strip
-  {
-    "xmin": 0,
-    "xmax": game.width,
-    "ymin": 0,
-    "ymax": 100
-  },
-  // Bottom strip
-  {
-    "xmin": 0,
-    "xmax": game.width,
-    "ymin": game.height - 100,
-    "ymax": game.height,
-  },
-  // Left patch
-  {
-    "xmin": 0,
-    "xmax": 100,
-    "ymin": 100,
-    "ymax": game.height - 100
-  },
-  // Right patch
-  {
-    "xmin": game.width - 100,
-    "xmax": game.width,
-    "ymin": 100,
-    "ymax": game.height - 100
-  }]
+  this.ZOMBIE_INITIAL_STATIC_COUNT = 5000;
+  this.ZOMBIE_MOBILE_SPEED = 0.2;
+  this.ZOMBIE_INITIAL_MOBILE_COUNT = 100;
+  this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
 }
 
 AAL.GameDirector.prototype.init = function() {
+  this.startTime_ = new Date().getTime();
   this.spawnZombies();
 }
 
 AAL.GameDirector.prototype.spawnZombies = function() {
   console.debug("GameDirector.spawnZombies()");
-  for(var i = 0; i < this.INITIAL_ZOMBIE_COUNT; i++) {
-    var spawnAreaIndex = Math.round(
-        Math.random() * (this.STATIC_ZOMBIE_SPAWN_AREAS.length - 1));
-    var spawnArea = this.STATIC_ZOMBIE_SPAWN_AREAS[spawnAreaIndex];
-    var startX =
-        (Math.random() * (spawnArea.xmax - spawnArea.xmin)) + spawnArea.xmin;
-    var startY =
-        (Math.random() * (spawnArea.ymax - spawnArea.ymin)) + spawnArea.ymin;
+  for(var i = 0; i < this.ZOMBIE_INITIAL_STATIC_COUNT; i++) {
+    var radius = this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS * 0.8;
+    var angle = Math.random() * (2 * Math.PI);
+    distX = Math.cos(angle) * radius;
+    distY = Math.sin(angle) * radius;
 
-    this.staticZombies.push(
-      this.entityGroup_.create(startX, startY, 'zombie').anchor.set(0.5));
+    startX = this.game_.world.centerX
+        + Math.cos(angle) * (radius + (Math.random() * 550));
+    startY = this.game_.world.centerY
+        + Math.sin(angle) * (radius + (Math.random() * 550));
+
+    var cacheZombie = this.game_.cache.getImage('zombie');
+    if(startX - cacheZombie.width / 2 > this.game_.width
+      || startX + cacheZombie.width / 2  < 0
+      || startY - cacheZombie.height / 2 > this.game_.height
+      || startY + cacheZombie.height / 2 < 0) {
+      continue;
+    }
+    
+    var zombie = this.staticZombiesGroup_.create(startX, startY, 'zombie');
+    var deltaX = zombie.x - this.game_.world.centerX;
+    var deltaY = zombie.y - this.game_.world.centerY;
+    var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI - 90;
+    zombie.angle = angle;
+    zombie.anchor.set(0.5);
+    this.staticZombiesGroup_.add(zombie);
   }
 
-  for(var i = 0; i < this.INITIAL_ZOMBIE_COUNT; i++) {
-    
+  for(var i = 0; i < this.ZOMBIE_INITIAL_MOBILE_COUNT; i++) {
+    var radius = this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS;
+    var angle = Math.random() * (2 * Math.PI);
+    distX = Math.cos(angle) * radius;
+    distY = Math.sin(angle) * radius;
+
+
+    var zombie = this.mobileZombiesGroup_.create(
+        this.game_.world.centerX + distX,
+        this.game_.world.centerY + distY,
+        'zombie');
+    zombie.anchor.set(0.5);
+    this.mobileZombiesGroup_.add(zombie);
   }
 }
 
 AAL.GameDirector.prototype.update = function() {
-  var node = this.mobileZombies.getHead();
-    while (node !== null) {
-      var zombie = node.data;
-      zombie.x += Math.random() * 0.2 - 0.1;
-      zombie.y += Math.random() * 0.2 - 0.1;
+  this.mobileZombiesGroup_.forEachAlive(function(zombie) {
+      var deltaX = zombie.x - this.game_.world.centerX;
+      var deltaY = zombie.y - this.game_.world.centerY;
+      var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI - 90;
+      zombie.angle = angle;
+      
+      var vx = Math.cos(angle);
+      var vy = Math.sin(angle);
+      zombie.x += vx * this.ZOMBIE_MOBILE_SPEED;
+      zombie.y += vy * this.ZOMBIE_MOBILE_SPEED;
 
-      Phaser.Math.clamp(zombie.x, 0, this.game_.width);
-      Phaser.Math.clamp(zombie.y, 0, this.game_.height);
 
-      node = node.next;
-    }
+    }.bind(this));
 }
