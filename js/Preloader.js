@@ -15,7 +15,8 @@ AAO.Preloader.prototype.preload = function() {
   // Load sprites
   this.load.image('bullet', 'img/bullet.jpg');
   this.load.image('player', 'img/player.png');
-  this.load.spritesheet('zombie', 'img/zombie.png', 128, 128, 7);
+  this.load.spritesheet('zombie', 'img/zombie.png', 128, 128, 18);
+  this.load.spritesheet('zombie-death', 'img/zombie-death.png', 128, 128, 8);
   
   this.load.image('background', 'img/background.jpg');
   this.load.image('darkness', 'img/darkness.png');
