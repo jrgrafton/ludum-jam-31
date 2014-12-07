@@ -11,7 +11,7 @@ AAO.GameDirector = function(game, entityGroup) {
   this.gameTime_ = 1000 * 60 * 5; // 5 minutes
 
   // Psuedo static vars
-  this.ZOMBIE_INITIAL_STATIC_COUNT = 500;
+  this.ZOMBIE_INITIAL_STATIC_COUNT = 1;
   this.ZOMBIE_MOBILE_SPEED = 0.3;
   this.ZOMBIE_INITIAL_MOBILE_COUNT = 100;
   this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
@@ -107,6 +107,10 @@ AAO.GameDirector.prototype.spawnZombies_ = function() {
         this.game_.world.centerX + distX,
         this.game_.world.centerY + distY,
         'zombie');
+
+    var deltaX = zombie.x - this.game_.world.centerX;
+    var deltaY = zombie.y - this.game_.world.centerY;
+    var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI - 90;
     zombie.angle = angle;
     zombie.anchor.set(0.5);
     zombie.animations.add('walk');
