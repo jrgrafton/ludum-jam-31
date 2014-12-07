@@ -81,14 +81,17 @@ AAO.Game.prototype.addSprites_ = function() {
         this.game.world.centerY, 'player');
   this.player_.anchor.set(0.5);
 
-  this.darknessOverlay_ = this.game.make.bitmapData(1820, 1820);
+  var cachedMask = this.game.cache.getImage('darkness-alpha-mask');
+  this.darknessOverlay_ =
+      this.game.make.bitmapData(cachedMask.width, cachedMask.height);
   this.darknessOverlay_.fill(0, 0, 0, 1);
 
   this.darknessMask_ = this.game.add.image(0, 0,'darkness-alpha-mask');
   this.darknessMask_.visible = false;
   this.darknessMask_.anchor.set(0.5);
 
-  this.darkness_ = this.game.make.bitmapData(1820, 1820);
+  this.darkness_ =
+      this.game.make.bitmapData(cachedMask.width, cachedMask.height);
   this.darkness_.alphaMask(
     this.darknessOverlay_,
     this.darknessMask_,
@@ -102,10 +105,10 @@ AAO.Game.prototype.addSprites_ = function() {
         this.darknessMask_.height)
   );
 
-  /* darknessSprite = this.game.add.image(
+  darknessSprite = this.game.add.image(
     this.game.world.centerX,
     this.game.world.centerY,
-    this.darkness_).anchor.set(0.5); */
+    this.darkness_).anchor.set(0.5);
 };
 AAO.Game.prototype.enablePhysics_ = function() {
   console.debug("Game.enablePhysics_()");
