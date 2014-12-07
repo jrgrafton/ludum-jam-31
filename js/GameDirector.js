@@ -13,8 +13,10 @@ AAO.GameDirector = function(game, entityGroup) {
 
   // Psuedo static vars
   this.ZOMBIE_INITIAL_STATIC_COUNT = 1000;
+  this.ZOMBIE_STATIC_ANIMATION_SPEED = 4;
   this.ZOMBIE_MOBILE_SPEED = 0.8;
   this.ZOMBIE_INITIAL_MOBILE_COUNT = 25;
+  this.ZOMBIE_MOBILE_ANIMATION_SPEED = 8;
   this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
   this.ZOMBIE_ACTIVATION_CHANCE = 2.0; // Per second chance
 
@@ -94,7 +96,7 @@ AAO.GameDirector.prototype.spawnStaticZombies_ = function() {
     zombie.angle = angle;
     zombie.anchor.set(0.5);
     zombie.animations.add('walk');
-    zombie.animations.play('walk', 4 * Math.random() + 4, true);
+    zombie.animations.play('walk', this.ZOMBIE_STATIC_ANIMATION_SPEED * (Math.random() + 1), true);
   }
 }
 
@@ -120,7 +122,7 @@ AAO.GameDirector.prototype.spawnMobileZombie_ = function() {
   zombie.angle = angle;
   zombie.anchor.set(0.5);
   zombie.animations.add('walk');
-  zombie.animations.play('walk', 4 * Math.random() + 4, true);
+  zombie.animations.play('walk', this.ZOMBIE_STATIC_ANIMATION_SPEED * (Math.random() + 1), true);
   zombie.visible = true;
 }
 
@@ -194,7 +196,7 @@ AAO.GameDirector.prototype.activateZombie_ = function(zombie) {
   var haveActivatedZombie = false;
   this.mobileZombiesGroup_.forEachAlive(function(zombie) {
     if(zombie.state !== "active" && !haveActivatedZombie) { 
-      zombie.animations.play('walk', 6, true);
+	  zombie.animations.play('walk', this.ZOMBIE_MOBILE_ANIMATION_SPEED * (Math.random() + 1), true);
       zombie.state = "active"; 
       zombie.visible = true;
       haveActivatedZombie = true;
