@@ -19,10 +19,10 @@ window.addEventListener('load',function() {
   });
 
   // add game states
-  game.state.add('Boot', AAL.Boot);
-  game.state.add('Preloader', AAL.Preloader);
-  game.state.add('MainMenu', AAL.MainMenu);
-  game.state.add('Game', AAL.Game);
+  game.state.add('Boot', AAO.Boot);
+  game.state.add('Preloader', AAO.Preloader);
+  game.state.add('MainMenu', AAO.MainMenu);
+  game.state.add('Game', AAO.Game);
 
   // start the Boot state
   game.state.start('Boot');

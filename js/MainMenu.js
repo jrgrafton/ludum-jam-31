@@ -1,4 +1,4 @@
-AAL.MainMenu = function(game){};
+AAO.MainMenu = function(game){};
 
-AAL.MainMenu.prototype.create = function() {};
-AAL.MainMenu.prototype.startGame_ = function() { this.state.start('Game'); };
+AAO.MainMenu.prototype.create = function() {};
+AAO.MainMenu.prototype.startGame_ = function() { this.state.start('Game'); };

@@ -1,18 +1,19 @@
-AAL.Preloader = function(game){
+AAO.Preloader = function(game){
   console.debug("Preloader()");
 
   // define width and height of the game
-  AAL.GAME_WIDTH = 1280;
-  AAL.GAME_HEIGHT = 768;
+  AAO.GAME_WIDTH = 1280;
+  AAO.GAME_HEIGHT = 768;
 };
 
-AAL.Preloader.prototype.preload = function() {
+AAO.Preloader.prototype.preload = function() {
   console.debug("Preloader.preload()");
 
   // set background color and preload image
   this.stage.backgroundColor = '#000';
 
   // Load sprites
+  this.load.image('bullet', 'img/bullet.jpg');
   this.load.image('player', 'img/player.jpg');
   this.load.spritesheet('zombie', 'img/zombie.png', 128, 128, 7);
   this.load.image('mask', 'img/mask.png');
@@ -25,7 +26,7 @@ AAL.Preloader.prototype.preload = function() {
   this.load.onFileComplete.add(this.onFileComplete_.bind(this));
 }
 
-AAL.Preloader.prototype.create = function() {
+AAO.Preloader.prototype.create = function() {
   console.debug("Preloader.create()");
 
   // start the MainMenu state
@@ -33,7 +34,7 @@ AAL.Preloader.prototype.create = function() {
   this.state.start('Game');
 }
 
-AAL.Preloader.prototype.onFileComplete_ = function() {
+AAO.Preloader.prototype.onFileComplete_ = function() {
   console.debug("Preloader.onFileComplete_()");
     /* this.spriteLoadingBar.crop(new Phaser.Rectangle(
           0, 0, this.cacheLoadingBar.width * (progress / 100),

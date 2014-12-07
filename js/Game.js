@@ -1,15 +1,13 @@
-AAL.Game = function(game){ 
+AAO.Game = function(game){ 
   console.debug("Game()");
 
   this.player_ = null;
-
   this.sceneryGroup_ = null;
   this.entityGroup_ = null;
-
   this.gameDirector_ = null;
 };
 
-AAL.Game.prototype.create = function() {
+AAO.Game.prototype.create = function() {
   console.debug("Game.create()");
 
   // Initialise physics
@@ -20,7 +18,7 @@ AAL.Game.prototype.create = function() {
   this.entityGroup_ = this.game.add.group();
 
   // Create game director
-  this.gameDirector_ = new AAL.GameDirector(this.game, this.entityGroup_);
+  this.gameDirector_ = new AAO.GameDirector(this.game, this.entityGroup_);
 
   // Add sprites and enable Physics
   this.addSprites_();
@@ -41,12 +39,13 @@ AAL.Game.prototype.create = function() {
     }
   }
 }
-AAL.Game.prototype.update = function() {
+AAO.Game.prototype.update = function() {
   console.debug("Game.update()");
   this.updatePlayer_();
   this.gameDirector_.update();
-};
-AAL.Game.prototype.updatePlayer_ = function() {
+}
+
+AAO.Game.prototype.updatePlayer_ = function() {
   console.debug("Game.updatePlayer_()");
 
   var deltaX = this.game.world.centerX - this.game.input.x;
@@ -73,7 +72,7 @@ AAL.Game.prototype.updatePlayer_ = function() {
   this.darkness_.dirty = true;
 };
 
-AAL.Game.prototype.addSprites_ = function() {
+AAO.Game.prototype.addSprites_ = function() {
   console.debug("Game.addSprites_()");
 
   this.sceneryGroup_.create(0, 0, 'background');
@@ -103,26 +102,26 @@ AAL.Game.prototype.addSprites_ = function() {
         this.darknessMask_.height)
   );
 
-  darknessSprite = this.game.add.image(
+  /* darknessSprite = this.game.add.image(
     this.game.world.centerX,
     this.game.world.centerY,
-    this.darkness_).anchor.set(0.5);
+    this.darkness_).anchor.set(0.5);*/
 };
-AAL.Game.prototype.enablePhysics_ = function() {
+AAO.Game.prototype.enablePhysics_ = function() {
   console.debug("Game.enablePhysics_()");
 };
 
 
-AAL.Game.prototype.managePause_ = function() {
+AAO.Game.prototype.managePause_ = function() {
   console.debug("Game.managePause_()");
 };
-AAL.Game.prototype.manageResume_ = function() {
+AAO.Game.prototype.manageResume_ = function() {
   console.debug("Game.manageResume_()");
 };
 
-AAL.Game.prototype.reset_ = function() {
+AAO.Game.prototype.reset_ = function() {
   console.debug("Game.reset_()");
 };
-AAL.Game.prototype.gameOver_ = function() {
+AAO.Game.prototype.gameOver_ = function() {
   console.debug("Game.gameOver_()");
 };

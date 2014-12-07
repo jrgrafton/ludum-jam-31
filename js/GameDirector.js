@@ -1,34 +1,72 @@
 /**
  * Controls entity spawn, collisions and updates
  **/
-AAL.GameDirector = function(game, entityGroup) {
+AAO.GameDirector = function(game, entityGroup) {
   this.game_ = game;
   this.lastUpdate_ = null;
+  this.lastShot_ = null;
+  this.gunAmmo_ = 10;
+  this.gunReloading_ = false;
   this.entityGroup_ = entityGroup;
-  this.mobileZombiesGroup_ = this.game_.add.group();
-  this.staticZombiesGroup_ = this.game_.add.group();
-  this.projectilesGroup_ = this.game_.add.group();
-
-  this.entityGroup_.add(this.mobileZombiesGroup_);
-  this.entityGroup_.add(this.staticZombiesGroup_);
-  this.entityGroup_.add(this.projectilesGroup_);
+  this.gameTime_ = 1000 * 60 * 5; // 5 minutes
 
   // Psuedo static vars
   this.ZOMBIE_INITIAL_STATIC_COUNT = 800;
   this.ZOMBIE_MOBILE_SPEED = 0.3;
   this.ZOMBIE_INITIAL_MOBILE_COUNT = 100;
   this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
-
   this.ZOMBIE_ACTIVATION_CHANCE = 0.1; // Per second chance
+
+  this.GUN_BULLET_SPEED = 300; // Pixels per second
+  this.GUN_COCK_SPEED = 750; // Min number of ms between shots
+  this.GUN_RELOAD_TIME = 2000;
+  this.GUN_CLIP_SIZE = 10;
 }
 
-AAL.GameDirector.prototype.init = function() {
+AAO.GameDirector.prototype.init = function() {
   this.lastUpdate_ = new Date().getTime();
-  this.spawnZombies();
+  this.lastShot_ = new Date().getTime();
+  this.setupGroups_();
+  this.setupPhysics_();
+  this.spawnZombies_();
+  this.setupTimer_();
 }
 
-AAL.GameDirector.prototype.spawnZombies = function() {
-  console.debug("GameDirector.spawnZombies()");
+AAO.GameDirector.prototype.setupGroups_ = function() {
+  console.debug("GameDirector.setupGroups_()");
+
+  this.mobileZombiesGroup_ = this.game_.add.group();
+  this.staticZombiesGroup_ = this.game_.add.group();
+  this.projectilesGroup_ = this.game_.add.group();
+  this.entityGroup_.add(this.mobileZombiesGroup_);
+  this.entityGroup_.add(this.staticZombiesGroup_);
+  this.entityGroup_.add(this.projectilesGroup_);
+}
+
+AAO.GameDirector.prototype.setupPhysics_ = function() {
+  console.debug("GameDirector.setupPhysics_()");
+
+  this.staticZombiesGroup_.physicsBodyType = Phaser.Physics.ARCADE;
+  this.staticZombiesGroup_.enableBody = true;
+  this.mobileZombiesGroup_.physicsBodyType = Phaser.Physics.ARCADE;
+  this.mobileZombiesGroup_.enableBody = true;
+
+  this.projectilesGroup_.physicsBodyType = Phaser.Physics.ARCADE;
+  this.projectilesGroup_.enableBody = true;
+  this.projectilesGroup_.createMultiple(50, 'bullet');
+  this.projectilesGroup_.setAll('checkWorldBounds', true);
+  this.projectilesGroup_.setAll('outOfBoundsKill', true);
+}
+
+AAO.GameDirector.prototype.setupTimer_ = function() {
+  timer = this.game_.time.create(false);
+  timer.loop(1000, this.updateTime_.bind(this), this);
+  timer.start();
+}
+
+AAO.GameDirector.prototype.spawnZombies_ = function() {
+  console.debug("GameDirector.spawnZombies_()");
+
   for(var i = 0; i < this.ZOMBIE_INITIAL_STATIC_COUNT; i++) {
     var radius = this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS * 0.8;
     var angle = Math.random() * (2 * Math.PI);
@@ -56,7 +94,7 @@ AAL.GameDirector.prototype.spawnZombies = function() {
     zombie.anchor.set(0.5);
     zombie.animations.add('walk');
     zombie.animations.play('walk', 4 * Math.random() + 4, true);
-    this.staticZombiesGroup_.add(zombie);
+    zombie.body.immovable = true;
   }
 
   for(var i = 0; i < this.ZOMBIE_INITIAL_MOBILE_COUNT; i++) {
@@ -73,15 +111,51 @@ AAL.GameDirector.prototype.spawnZombies = function() {
     zombie.anchor.set(0.5);
     zombie.animations.add('walk');
     zombie.animations.play('walk', 4 * Math.random() + 4, true);
-    this.mobileZombiesGroup_.add(zombie);
+    zombie.body.immovable = true;
   }
 
   this.activateZombie_(this.mobileZombiesGroup_.getAt(0));
 }
 
-AAL.GameDirector.prototype.update = function() {
+AAO.GameDirector.prototype.update = function() {
   console.debug("GameDirector.update()");
+  this.updateZombies_();
+  this.updateProjectiles_();
+  this.updateCollisions_();
+  if(window.DEBUG) {
+    this.updateDebug_();
+  }
 
+  this.lastUpdate_ = new Date().getTime();
+}
+
+AAO.GameDirector.prototype.updateDebug_ = function() {
+  var minutes = Math.round(this.gameTime_ / (60 * 1000));
+  var seconds = (this.gameTime_ % (60 * 1000)) / 1000;
+
+  this.game_.debug.text('time: '+ minutes + ":" + seconds, 32, 40);
+  this.game_.debug.text('bullets: ' + this.gunAmmo_, 32, 60);
+  this.game_.debug.text('reloading: '
+    + "" + ((this.gunReloading_)? 1 : 0), 32, 80);
+}
+
+AAO.GameDirector.prototype.updateTime_ = function() {
+  this.gameTime_ -= 1000;
+}
+
+AAO.GameDirector.prototype.updateCollisions_ = function() {
+  // Collide bullets and zombies
+  this.game_.physics.arcade.collide(this.projectilesGroup_,
+      this.mobileZombiesGroup_,
+      this.projectileHitZombie_.bind(this),
+      null, this);
+  this.game_.physics.arcade.collide(this.projectilesGroup_,
+      this.staticZombiesGroup_,
+      this.projectileHitZombie_.bind(this),
+      null, this);
+}
+
+AAO.GameDirector.prototype.updateZombies_ = function() {
   this.mobileZombiesGroup_.forEachAlive(function(zombie) {
     if(zombie.state !== "active") { return };
 
@@ -102,20 +176,51 @@ AAL.GameDirector.prototype.update = function() {
       > Math.random()) {
     this.activateZombie_()
   }
-  this.lastUpdate_ = new Date().getTime();
 }
 
-AAL.GameDirector.prototype.activateZombie_ = function(zombie) {
+AAO.GameDirector.prototype.activateZombie_ = function(zombie) {
   console.debug("GameDirector.activateZombie()");
   console.log("activate");
   var haveActivatedZombie = false;
   this.mobileZombiesGroup_.forEachAlive(function(zombie) {
     if(zombie.state !== "active" && !haveActivatedZombie) { 
+      zombie.animations.play('walk', 6, true);
       zombie.state = "active"; 
       haveActivatedZombie = true;
     }
   });
 }
 
+AAO.GameDirector.prototype.updateProjectiles_ = function() {
+  // Check for reload complete
+  if(this.gunReloading_ &&
+      new Date().getTime() - this.gunReloading_ > this.GUN_RELOAD_TIME) {
+    this.gunAmmo_ = this.GUN_CLIP_SIZE;
+    this.gunReloading_ = false;
+  }
+
+  // Check for bullet fire
+  if(this.game_.input.activePointer.isDown
+        && !this.gunReloading_
+        && new Date().getTime() - this.lastShot_ > this.GUN_COCK_SPEED) {
+
+    var bullet = this.projectilesGroup_.getFirstDead();
+    bullet.reset(this.game_.world.centerX, this.game_.world.centerY);
+    bullet.anchor.set(0.5);
+    bullet.rotation = this.game_.physics.arcade.angleToPointer(bullet);
+    this.game_.physics.arcade.moveToPointer(bullet, 300);
+
+    this.lastShot_ = new Date().getTime();
+    if(--this.gunAmmo_ === 0) {
+      this.gunReloading_ = new Date().getTime();
+    }
+  }
+}
+
+AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
+  // TODO: Kill zombie
+  zombie.kill();
+  projectile.kill();
+}
 
 
