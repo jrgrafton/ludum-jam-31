@@ -134,16 +134,27 @@ AAO.Game.prototype.reset_ = function() {
 };
 AAO.Game.prototype.gameOver_ = function() {
   console.debug("Game.gameOver_()");
-  
-  console.log("game over")
-  filter = this.game.add.filter('Pixelate', 10);
+  if(this.gameOver) return;
+
+  this.gameOver = true;
+  var cameraZoom = 5;
+  var animationTime = 2539;
+
+  // Zoom and pixelate
+  filter = this.game.add.filter('Pixelate');
   this.entityGroup_.filters = [filter];
-  this.game.add.tween(this).to( 
-  { worldScale: 5 },
-    500,
-    Phaser.Easing.EaseOut,
+  var tween = this.game.add.tween(this);
+
+  tween.onUpdateCallback(function() {
+    if(this.worldScale > cameraZoom * 0.7) {
+      this.game.paused = true;
+    }
+  }.bind(this));
+
+  tween.to(
+    { worldScale: cameraZoom },
+    animationTime,
+    Phaser.Easing.Default,
     true
   );
-
-  //this.game.paused = true;
 };
