@@ -9,11 +9,12 @@ AAO.GameDirector = function(game, entityGroup) {
   this.gunReloading_ = false;
   this.entityGroup_ = entityGroup;
   this.gameTime_ = 1000 * 60 * 5; // 5 minutes
+  this.zombieKills_ = 0;
 
   // Psuedo static vars
   this.ZOMBIE_INITIAL_STATIC_COUNT = 1;
   this.ZOMBIE_MOBILE_SPEED = 0.3;
-  this.ZOMBIE_INITIAL_MOBILE_COUNT = 100;
+  this.ZOMBIE_INITIAL_MOBILE_COUNT = 2;
   this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
   this.ZOMBIE_ACTIVATION_CHANCE = 2.0; // Per second chance
 
@@ -46,13 +47,9 @@ AAO.GameDirector.prototype.setupGroups_ = function() {
 AAO.GameDirector.prototype.setupPhysics_ = function() {
   console.debug("GameDirector.setupPhysics_()");
 
-  this.staticZombiesGroup_.physicsBodyType = Phaser.Physics.ARCADE;
-  this.staticZombiesGroup_.enableBody = true;
-  this.mobileZombiesGroup_.physicsBodyType = Phaser.Physics.ARCADE;
-  this.mobileZombiesGroup_.enableBody = true;
-
   this.projectilesGroup_.physicsBodyType = Phaser.Physics.ARCADE;
   this.projectilesGroup_.enableBody = true;
+
   this.projectilesGroup_.createMultiple(50, 'bullet');
   this.projectilesGroup_.setAll('checkWorldBounds', true);
   this.projectilesGroup_.setAll('outOfBoundsKill', true);
@@ -66,7 +63,11 @@ AAO.GameDirector.prototype.setupTimer_ = function() {
 
 AAO.GameDirector.prototype.spawnZombies_ = function() {
   console.debug("GameDirector.spawnZombies_()");
-
+  this.spawnStaticZombies_();
+  this.spawnMobileZombies_();
+  this.activateZombie_(this.mobileZombiesGroup_.getAt(0));
+}
+AAO.GameDirector.prototype.spawnStaticZombies_ = function() {
   for(var i = 0; i < this.ZOMBIE_INITIAL_STATIC_COUNT; i++) {
     var radius = this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS * 0.8;
     var angle = Math.random() * (2 * Math.PI);
@@ -94,9 +95,10 @@ AAO.GameDirector.prototype.spawnZombies_ = function() {
     zombie.anchor.set(0.5);
     zombie.animations.add('walk');
     zombie.animations.play('walk', 4 * Math.random() + 4, true);
-    zombie.body.immovable = true;
   }
+}
 
+AAO.GameDirector.prototype.spawnMobileZombies_ = function() {
   for(var i = 0; i < this.ZOMBIE_INITIAL_MOBILE_COUNT; i++) {
     var radius = this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS;
     var angle = Math.random() * (2 * Math.PI);
@@ -115,10 +117,8 @@ AAO.GameDirector.prototype.spawnZombies_ = function() {
     zombie.anchor.set(0.5);
     zombie.animations.add('walk');
     zombie.animations.play('walk', 4 * Math.random() + 4, true);
-    zombie.body.immovable = true;
+    zombie.visible = true;
   }
-
-  this.activateZombie_(this.mobileZombiesGroup_.getAt(0));
 }
 
 AAO.GameDirector.prototype.update = function() {
@@ -143,9 +143,10 @@ AAO.GameDirector.prototype.renderDebug_ = function() {
   this.game_.debug.text('bullets: ' + this.gunAmmo_, 32, 60);
   this.game_.debug.text('reloading: '
     + "" + ((this.gunReloading_)? 1 : 0), 32, 80);
+  this.game_.debug.text('zombie kills: ' + this.zombieKills_, 32, 100);
 
   this.mobileZombiesGroup_.forEachAlive(function(zombie) {
-    this.game_.debug.body(zombie);
+    //this.game_.debug.body(zombie);
   }.bind(this));
   
 }
@@ -158,10 +159,6 @@ AAO.GameDirector.prototype.updateCollisions_ = function() {
   // Collide bullets and zombies
   this.game_.physics.arcade.collide(this.projectilesGroup_,
       this.mobileZombiesGroup_,
-      this.projectileHitZombie_.bind(this),
-      null, this);
-  this.game_.physics.arcade.collide(this.projectilesGroup_,
-      this.staticZombiesGroup_,
       this.projectileHitZombie_.bind(this),
       null, this);
 }
@@ -196,9 +193,14 @@ AAO.GameDirector.prototype.activateZombie_ = function(zombie) {
     if(zombie.state !== "active" && !haveActivatedZombie) { 
       zombie.animations.play('walk', 6, true);
       zombie.state = "active"; 
+      zombie.visible = true;
       haveActivatedZombie = true;
+
+      this.game_.physics.enable(zombie, Phaser.Physics.ARCADE);
+      zombie.enableBody = true;
+      zombie.body.immovable = true;
     }
-  });
+  }.bind(this));
 }
 
 AAO.GameDirector.prototype.updateProjectiles_ = function() {
@@ -231,6 +233,9 @@ AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
   // TODO: Kill zombie
   zombie.kill();
   projectile.kill();
+  if(++this.zombieKills_ % this.ZOMBIE_INITIAL_MOBILE_COUNT === 0) {
+    this.spawnMobileZombies_();
+  }
 }
 
 
