@@ -14,11 +14,11 @@ AAO.GameDirector = function(game, entityGroup) {
   // Psuedo static vars
   this.ZOMBIE_INITIAL_STATIC_COUNT = 1000;
   this.ZOMBIE_MOBILE_SPEED = 0.3;
-  this.ZOMBIE_INITIAL_MOBILE_COUNT = 20;
+  this.ZOMBIE_INITIAL_MOBILE_COUNT = 25;
   this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
   this.ZOMBIE_ACTIVATION_CHANCE = 2.0; // Per second chance
 
-  this.GUN_BULLET_SPEED = 250; // Pixels per second
+  this.GUN_BULLET_SPEED = 450; // Pixels per second
   this.GUN_COCK_SPEED = 100; // Min number of ms between shots
   this.GUN_RELOAD_TIME = 1200;
   this.GUN_CLIP_SIZE = 7;
