@@ -16,7 +16,7 @@ AAO.GameDirector = function(game, entityGroup) {
   this.ZOMBIE_STATIC_ANIMATION_SPEED = 4;
   this.ZOMBIE_MOBILE_SPEED = 0.8;
   this.ZOMBIE_INITIAL_MOBILE_COUNT = 25;
-  this.ZOMBIE_MOBILE_ANIMATION_SPEED = 8;
+  this.ZOMBIE_MOBILE_ANIMATION_SPEED = 6;
   this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
   this.ZOMBIE_ACTIVATION_CHANCE = 2.0; // Per second chance
 
@@ -122,7 +122,7 @@ AAO.GameDirector.prototype.spawnMobileZombie_ = function() {
   zombie.angle = angle;
   zombie.anchor.set(0.5);
   zombie.animations.add('walk');
-  zombie.animations.play('walk', this.ZOMBIE_STATIC_ANIMATION_SPEED * (Math.random() + 1), true);
+  zombie.animations.play('walk', this.ZOMBIE_MOBILE_ANIMATION_SPEED * (Math.random() + 1), true);
   zombie.visible = true;
 }
 
