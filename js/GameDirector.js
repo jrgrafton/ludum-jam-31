@@ -273,9 +273,12 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
     var bullet = this.projectilesGroup_.getFirstDead();
     bullet.reset(this.game_.world.centerX, this.game_.world.centerY);
     bullet.anchor.set(0.5);
-    bullet.rotation = this.game_.physics.arcade.angleToXY(bullet,
-      this.game_.input.x,
-      this.game_.input.y);
+
+    var deltaX = bullet.x - this.game_.input.x;
+    var deltaY = bullet.y - this.game_.input.y;
+    var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI - 90;
+    bullet.angle = angle;
+
     this.game_.physics.arcade.moveToXY(bullet,
       this.game_.input.x,
       this.game_.input.y,
