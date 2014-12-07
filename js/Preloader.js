@@ -14,7 +14,7 @@ AAL.Preloader.prototype.preload = function() {
 
   // Load sprites
   this.load.image('player', 'img/player.jpg');
-  this.load.image('zombie', 'img/zombie.jpg');
+  this.load.spritesheet('zombie', 'img/zombie.png', 128, 128, 7);
   this.load.image('mask', 'img/mask.png');
   this.load.image('mask-test', 'img/mask-test.png');
   
