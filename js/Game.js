@@ -19,8 +19,8 @@ AAO.Game = function(game){
   this.GAME_OVER_ZOOM_LEVEL = 5;
   this.GAME_OVER_ANIMATION_TIME = 2539;
 
-  this.LIGHTNING_START = 5000; // MS's after game starts
-  this.LIGHTNING_ANIMATION_TIME = 750;
+  this.LIGHTNING_START = 1; // MS's after game starts
+  this.LIGHTNING_ANIMATION_TIME = 400;
 }
 
 AAO.Game.prototype.create = function() {
@@ -155,26 +155,30 @@ AAO.Game.prototype.setupLightningTimer_ = function() {
 }
 
 AAO.Game.prototype.lightningStrike_ = function() {
+  this.darknessGroup_.cacheAsBitmap = true;
   this.game.add.tween(this.darknessGroup_).to(
-      {alpha: 0.4}, 
+      {alpha: 0}, 
       this.LIGHTNING_ANIMATION_TIME / 2,
-      Phaser.Easing.Linear.None,
+      Phaser.Easing.Default,
       true,
       0,
       0,
       true).onComplete.add(function() {
-      
+      this.darknessGroup_.cacheAsBitmap = false;
       setTimeout(function() {
+        this.darknessGroup_.cacheAsBitmap = true;
         this.sfx_["lightning"].play();
         this.game.add.tween(this.darknessGroup_).to(
-          {alpha: 0.1}, 
+          {alpha: 0.2}, 
           this.LIGHTNING_ANIMATION_TIME,
           Phaser.Easing.Linear.None,
           true,
           0,
           0,
-          true)
-      }.bind(this), 2000)
+          true).onComplete.add(function() { 
+            this.darknessGroup_.cacheAsBitmap = false;
+          }.bind(this));
+      }.bind(this), 2000);
     }.bind(this));
 }
 
