@@ -3,7 +3,7 @@ AAO.MainMenu = function(game){
 
   this.clouds_ = [];
 
-  this.CLOUD_ANIMATION_SPEED = 80000; // MS to animate to one side
+  this.CLOUD_ANIMATION_SPEED = 20000; // MS to animate to one side
 }
 
 AAO.MainMenu.prototype.create = function() {
@@ -14,7 +14,7 @@ AAO.MainMenu.prototype.create = function() {
   this.menuMusic_.play('',0,1,true);
   this.buttonClick_ = this.game.add.audio('select');
 
-  this.clouds_.push(this.game.add.image(this.game.width/2,this.game.height,"smoke"));
+  this.clouds_.push(this.game.add.image(this.game.width/2 + 640 / 2 , this.game.height,"smoke"));
   this.clouds_.push(this.game.add.image(-640,0,"smoke"));
 
   // Inverse first cloud
@@ -23,7 +23,7 @@ AAO.MainMenu.prototype.create = function() {
 
   // Animate clouds
   this.game.add.tween(this.clouds_[0]).to(
-      {x: -640}, 
+      {x: 640 / 2}, 
       this.CLOUD_ANIMATION_SPEED,
       Phaser.Easing.Linear.None,
       true,
