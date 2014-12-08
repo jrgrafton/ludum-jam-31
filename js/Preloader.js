@@ -66,6 +66,8 @@ AAO.Preloader.prototype.preload = function() {
     'sound/sfx/reload-fast.ogg']);
   this.game.load.audio('zombie-groan', ['sound/sfx/zombie_groan.mp3',
     'sound/sfx/zombie_groan.ogg']);
+  this.game.load.audio('lightning', ['sound/sfx/lightning.mp3',
+    'sound/sfx/lightning.ogg']);
 
   // Load buttons
   this.game.load.spritesheet(

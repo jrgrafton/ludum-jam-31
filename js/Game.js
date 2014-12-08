@@ -9,14 +9,19 @@ AAO.Game = function(game){
   this.worldScale_ = 1;
   this.gameOverOverlay_ = null;
 
+  this.darknessMask_ = null
+  this.darknessSprite_ = null;
+
   this.music_ = null;
   this.sfx_ = null;
-
   this.restartButton_ = null;
 
   this.GAME_OVER_ZOOM_LEVEL = 5;
   this.GAME_OVER_ANIMATION_TIME = 2539;
-};
+
+  this.LIGHTNING_START = 5000; // MS's after game starts
+  this.LIGHTNING_ANIMATION_TIME = 750;
+}
 
 AAO.Game.prototype.create = function() {
   console.debug("Game.create()");
@@ -27,6 +32,7 @@ AAO.Game.prototype.create = function() {
   // Create darkness group
   this.sceneryGroup_ = this.game.add.group();
   this.entityGroup_ = this.game.add.group();
+  this.darknessGroup_ = this.game.add.group();
 
   // Create game director
   this.gameDirector_ = new AAO.GameDirector(this, this.entityGroup_);
@@ -49,6 +55,9 @@ AAO.Game.prototype.create = function() {
     this.game.height);
   this.game.world.pivot.x = this.game.width / 2;
   this.game.world.pivot.y = this.game.height / 2;
+
+  // Start lightning timer
+  this.setupLightningTimer_();
 
   if(window.DEBUG) {
     this.game.time.advancedTiming = true;
@@ -104,24 +113,18 @@ AAO.Game.prototype.addSprites_ = function() {
   console.debug("Game.addSprites_()");
 
   this.sceneryGroup_.create(0, 0, 'background');
-  var cachedMask = this.game.cache.getImage('darkness-alpha-mask');
-  this.darknessOverlay_ =
-      this.game.make.bitmapData(cachedMask.width, cachedMask.height);
-  this.darknessOverlay_.fill(5, 9, 5, 1);
 
   this.darknessMask_ = this.game.add.image(
       this.game.world.centerX,
       this.game.world.centerY,
       'darkness-alpha-mask');
   this.darknessMask_.anchor.set(0.5);
-  darknessSprite = this.game.add.image(
-    this.game.world.centerX,
-    this.game.world.centerY,
-    this.darkness_).anchor.set(0.5);
-  this.game.add.image(0, 0,'darkness');
-
+  this.darknessSprite_ = this.game.add.image(0, 0,'darkness');
   this.gameOverOverlay_ = this.game.add.sprite(0, 0, "game-over-overlay");
   this.gameOverOverlay_.visible = false;
+
+  this.darknessGroup_.add(this.darknessMask_);
+  this.darknessGroup_.add(this.darknessSprite_);
 };
 
 AAO.Game.prototype.addAudio_ = function() {
@@ -133,6 +136,7 @@ AAO.Game.prototype.addAudio_ = function() {
   this.sfx_["slow-down-to-halt"] = this.game.add.audio('slow-down-to-halt');
   this.sfx_["rewind"] = this.game.add.audio('rewind');
   this.sfx_["button-click"] = this.game.add.audio('select');
+  this.sfx_["lightning"] = this.game.add.audio('lightning');
 }
 
 AAO.Game.prototype.managePause_ = function() {
@@ -145,7 +149,36 @@ AAO.Game.prototype.manageResume_ = function() {
 AAO.Game.prototype.reset_ = function() {
   console.debug("Game.reset_()");
 };
-AAO.Game.prototype.gameOver = function() {
+
+AAO.Game.prototype.setupLightningTimer_ = function() {
+  setTimeout(this.lightningStrike_.bind(this), this.LIGHTNING_START);
+}
+
+AAO.Game.prototype.lightningStrike_ = function() {
+  this.game.add.tween(this.darknessGroup_).to(
+      {alpha: 0.4}, 
+      this.LIGHTNING_ANIMATION_TIME / 2,
+      Phaser.Easing.Linear.None,
+      true,
+      0,
+      0,
+      true).onComplete.add(function() {
+      
+      setTimeout(function() {
+        this.sfx_["lightning"].play();
+        this.game.add.tween(this.darknessGroup_).to(
+          {alpha: 0.1}, 
+          this.LIGHTNING_ANIMATION_TIME,
+          Phaser.Easing.Linear.None,
+          true,
+          0,
+          0,
+          true)
+      }.bind(this), 2000)
+    }.bind(this));
+}
+
+AAO.Game.prototype.gameOver = function(playerWon) {
   console.debug("Game.gameOver()");
   if(this.gameOver_) return;
 

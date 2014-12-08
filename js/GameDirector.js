@@ -12,7 +12,6 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.entityGroup_ = entityGroup;
   this.gameTimeText_ = null;
   this.gameTimeTextGameOver_ = null;
-  this.zombieKills_ = 0;
   this.sfx_ = null;
   this.clipSprites_ = [];
 
@@ -27,9 +26,13 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.UIGroup_ = null;
   this.playerGroup_ = null;
 
+  // Stats
+  this.zombiesKilled = 0;
+  this.bulletsFired = 0;
+
   // Psuedo static vars
   this.TOTAL_GAME_TIME = 1000 * 60 * 5; // 5 minutes
-  this.ZOMBIE_INITIAL_STATIC_COUNT = 50;
+  this.ZOMBIE_INITIAL_STATIC_COUNT = 500;
   this.ZOMBIE_STATIC_ANIMATION_SPEED = 4;
   this.ZOMBIE_MOBILE_SPEED = 0.8;
   this.ZOMBIE_INITIAL_MOBILE_COUNT = 25;
@@ -226,7 +229,8 @@ AAO.GameDirector.prototype.renderDebug_ = function() {
   this.game_.debug.text('bullets: ' + this.gunAmmo_, 32, 60);
   this.game_.debug.text('reloading: '
     + "" + ((this.gunReloading_)? 1 : 0), 32, 80);
-  this.game_.debug.text('zombie kills: ' + this.zombieKills_, 32, 100);
+  this.game_.debug.text('zombie kills: ' + this.zombiesKilled, 32, 100);
+  this.game_.debug.text('bullets fired: ' + this.bulletsFired, 32, 120);
 
   this.game_.debug.body(this.player_);
   this.mobileZombiesGroup_.forEachAlive(function(zombie) {
@@ -260,7 +264,12 @@ AAO.GameDirector.prototype.updateTime_ = function() {
   var seconds = (this.gameTime % (60 * 1000)) / 1000;
 
   this.gameTime -= 1000;
-  this.gameTimeText_.text = (minutes < 10 ? "0" : "") + minutes + ":" + ("0" + seconds).slice(-2);;
+  this.gameTimeText_.text = (minutes < 10 ? "0" : "") + minutes + ":" + ("0" + seconds).slice(-2);
+
+  if(this.gameTime === 0) {
+    this.pauseState_();
+    this.gameState_.gameOver(true);
+  }
 }
 
 AAO.GameDirector.prototype.updateCollisions_ = function() {
@@ -364,10 +373,9 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
     this.lastShot_ = this.game_.input.activePointer.timeDown;
     this.player_.animations.play("fire", this.PLAYER_ANIMATION_SPEED);
     this.sfx_["gunshot"].play();
-    
-
     this.clipSprites_[this.gunAmmo_ - 1].animations.play("empty");
     --this.gunAmmo_;
+    ++this.bulletsFired;
   }
 }
 
@@ -383,14 +391,14 @@ AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
   this.mobileZombiesGroup_.removeChild(zombie);
   this.deadZombiesGroup_.addChild(zombie);
   projectile.kill();
-  ++this.zombieKills_
+  ++this.zombiesKilled
   this.spawnMobileZombie_();
   this.sfx_["gunshot-hit"].play();
 }
 
 AAO.GameDirector.prototype.zombieHitPlayer_ = function(player, zombie) {
   this.pauseState_();
-  this.gameState_.gameOver();
+  this.gameState_.gameOver(false);
 }
 
 AAO.GameDirector.prototype.pauseState_ = function() {
@@ -428,4 +436,8 @@ AAO.GameDirector.prototype.resetState = function() {
   var minutes = Math.floor(this.gameTime / (60 * 1000));
   var seconds = (this.gameTime % (60 * 1000)) / 1000;
   this.gameTimeText_.text = (minutes < 10 ? "0" : "") + minutes + ":" + ("0" + seconds).slice(-2);
+
+  // Reset stats
+  this.zombiesKilled = 0;
+  this.bulletsFired = 0;
 }
