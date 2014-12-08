@@ -251,7 +251,6 @@ AAO.GameDirector.prototype.updatePlayer_ = function() {
 }
 
 AAO.GameDirector.prototype.updateTime_ = function() {
-  console.log("update time");
   var minutes = Math.floor(this.gameTime / (60 * 1000));
   var seconds = (this.gameTime % (60 * 1000)) / 1000;
 

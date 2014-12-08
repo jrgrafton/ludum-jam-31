@@ -92,7 +92,10 @@ AAO.Game.prototype.addText_ = function() {
 AAO.Game.prototype.addButtons_ = function() {
   this.restartButton_ = this.add.button(this.game.world.centerX,
         this.game.world.centerY + 200, 'restart-button',
-        this.gameOverRestart_.bind(this), this, 1, 0, 1, 1)
+        function() {
+          this.sfx_["button-click"].play()
+          this.gameOverRestart_();
+        }.bind(this), this, 1, 0, 1, 0)
   this.restartButton_.anchor.setTo(0.5);
   this.restartButton_.visible = false;
 }
@@ -129,6 +132,7 @@ AAO.Game.prototype.addAudio_ = function() {
   this.sfx_["zombie-shuffle"].play('',0,1,true);
   this.sfx_["slow-down-to-halt"] = this.game.add.audio('slow-down-to-halt');
   this.sfx_["rewind"] = this.game.add.audio('rewind');
+  this.sfx_["button-click"] = this.game.add.audio('select');
 }
 
 AAO.Game.prototype.managePause_ = function() {
@@ -203,11 +207,16 @@ AAO.Game.prototype.gameOver = function() {
 };
 
 AAO.Game.prototype.gameOverRestart_ = function() {
-  console.log("restart");
   // Reset overlay
   this.gameOverOverlay_.visible = false;
   this.gameTimeTextGameOver_.visible = false;
   this.restartButton_.visible = false;
+
+  // Terrible hack - phaser doesn't seem to correctly reset button state after
+  // our custom zooming
+  this.restartButton_.destroy(true);
+  this.restartButton_.game = this.game;
+  this.addButtons_();
 
   // Reset game director
   this.gameDirector_.resetState();
