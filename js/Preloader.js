@@ -34,6 +34,7 @@ AAO.Preloader.prototype.preload = function() {
   this.load.image('clip-empty', 'img/clip-empty.png');
   this.load.image('clip-loaded', 'img/clip-loaded.png');
   this.load.image('smoke', 'img/smoke.png');
+  this.load.image('smoke-test', 'img/smoke-test.png');
   this.load.spritesheet('clip-sprite', 'img/clip-sprite.png', 71, 37, 2);
 
   // Load filters
