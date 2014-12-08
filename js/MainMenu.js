@@ -3,7 +3,7 @@ AAO.MainMenu = function(game){
 
   this.clouds_ = [];
 
-  this.CLOUD_ANIMATION_SPEED = 20000; // MS to animate to one side
+  this.CLOUD_ANIMATION_SPEED = 25000; // MS to animate to one side
 }
 
 AAO.MainMenu.prototype.create = function() {
@@ -24,16 +24,16 @@ AAO.MainMenu.prototype.create = function() {
   // Animate clouds
   this.game.add.tween(this.clouds_[0]).to(
       {x: 640 / 2}, 
-      this.CLOUD_ANIMATION_SPEED,
-      Phaser.Easing.Linear.None,
+      this.CLOUD_ANIMATION_SPEED*0.62,
+      Phaser.Easing.EaseInOut,
       true,
       0,
       -1,
       true);
   this.game.add.tween(this.clouds_[1]).to(
       {x: 0}, 
-      this.CLOUD_ANIMATION_SPEED*0.5,
-      Phaser.Easing.Linear.None,
+      this.CLOUD_ANIMATION_SPEED*0.38,
+      Phaser.Easing.EaseInOut,
       true,
       0,
       -1,
