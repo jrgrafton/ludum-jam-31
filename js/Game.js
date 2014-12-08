@@ -81,8 +81,8 @@ AAO.Game.prototype.addText_ = function() {
     this.game.world.centerX,
     this.game.world.centerY,
     'juice-regular',
-    '5:00',
-  60);
+    '05:00',
+  120);
   this.gameTimeTextGameOver_.visible = false;
 }
 
@@ -166,7 +166,7 @@ AAO.Game.prototype.gameOver = function() {
       // Game time for game over overlay
       var minutes = Math.floor(this.gameDirector_.gameTime / (60 * 1000));
       var seconds = (this.gameDirector_.gameTime % (60 * 1000)) / 1000;
-      this.gameTimeTextGameOver_.text = minutes + ":" + ("0" + seconds).slice(-2);;
+      this.gameTimeTextGameOver_.text = (minutes < 10 ? "0" : "") + minutes + ":" + ("0" + seconds).slice(-2);;
       this.gameTimeTextGameOver_.scale =
           {x: 1 / this.worldScale_, y:1 / this.worldScale_}
       this.gameTimeTextGameOver_.x =

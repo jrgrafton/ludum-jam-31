@@ -30,7 +30,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
   // Psuedo static vars
   this.ZOMBIE_INITIAL_STATIC_COUNT = 50;
   this.ZOMBIE_STATIC_ANIMATION_SPEED = 4;
-  this.ZOMBIE_MOBILE_SPEED = 0;//0.8;
+  this.ZOMBIE_MOBILE_SPEED = 0.8;//0.8;
   this.ZOMBIE_INITIAL_MOBILE_COUNT = 25;
   this.ZOMBIE_MOBILE_ANIMATION_SPEED = 6;
   this.ZOMBIE_MOBILE_ANIMATION_DYING_SPEED = 6;
@@ -80,8 +80,8 @@ AAO.GameDirector.prototype.addAmmo_ = function() {
 }
 
 AAO.GameDirector.prototype.addText_ = function() {
-  this.gameTimeText_ = this.game_.add.bitmapText(50, 50,
-        'juice-regular','5:00', 40);
+  this.gameTimeText_ = this.game_.add.bitmapText(45, 50,
+        'juice-regular','05:00', 48);
 }
 
 AAO.GameDirector.prototype.addAudio_ = function() {
@@ -250,7 +250,7 @@ AAO.GameDirector.prototype.updateTime_ = function() {
   var seconds = (this.gameTime % (60 * 1000)) / 1000;
 
   this.gameTime -= 1000;
-  this.gameTimeText_.text = minutes + ":" + ("0" + seconds).slice(-2);;
+  this.gameTimeText_.text = (minutes < 10 ? "0" : "") + minutes + ":" + ("0" + seconds).slice(-2);;
 }
 
 AAO.GameDirector.prototype.updateCollisions_ = function() {
