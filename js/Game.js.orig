@@ -84,8 +84,8 @@ AAO.Game.prototype.addText_ = function() {
     this.game.world.centerX,
     this.game.world.centerY,
     'juice-regular',
-    '5:00',
-  60);
+    '05:00',
+  120);
   this.gameTimeTextGameOver_.visible = false;
 }
 
@@ -155,6 +155,34 @@ AAO.Game.prototype.gameOver = function() {
 
   tween.onUpdateCallback(function() {
     this.game.world.scale.set(this.worldScale_);
+<<<<<<< Updated upstream
+    if(this.worldScale_ > cameraZoom * 0.6) {
+      //this.entityGroup_.filters = null;
+      this.gameOverOverlay_.scale =
+          {x: 1 / this.worldScale_, y:1 / this.worldScale_}
+      this.gameOverOverlay_.x =
+          this.game.world.centerX - this.gameOverOverlay_.width/2;
+      this.gameOverOverlay_.y =
+          this.game.world.centerY - this.gameOverOverlay_.height/2;
+      this.gameOverOverlay_.visible = true;
+
+      // Game time for game over overlay
+      var minutes = Math.floor(this.gameDirector_.gameTime / (60 * 1000));
+      var seconds = (this.gameDirector_.gameTime % (60 * 1000)) / 1000;
+      this.gameTimeTextGameOver_.text = (minutes < 10 ? "0" : "") + minutes + ":" + ("0" + seconds).slice(-2);;
+      this.gameTimeTextGameOver_.scale =
+          {x: 1 / this.worldScale_, y:1 / this.worldScale_}
+      this.gameTimeTextGameOver_.x =
+          this.game.world.centerX - this.gameTimeTextGameOver_.width/2;
+      this.gameTimeTextGameOver_.y =
+          this.game.world.centerY - this.gameTimeTextGameOver_.height/2;
+      this.gameTimeTextGameOver_.visible = true;
+
+
+      tween.stop();
+      this.game.paused = true;
+    }
+=======
   }.bind(this));
 
   tween.onComplete.add(function() {
@@ -189,6 +217,7 @@ AAO.Game.prototype.gameOver = function() {
 
 
     tween.stop();
+>>>>>>> Stashed changes
   }.bind(this));
 
   tween.to(

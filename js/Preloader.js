@@ -61,8 +61,8 @@ AAO.Preloader.prototype.preload = function() {
   this.game.load.audio('rewind',
     ['sound/sfx/rewind.mp3','sound/sfx/rewind.ogg']);
   this.game.load.audio('select', ['sound/sfx/select.wav']);
-  this.game.load.audio('reload', ['sound/sfx/reload.mp3',
-    'sound/sfx/reload.ogg']);
+  this.game.load.audio('reload', ['sound/sfx/reload-fast.mp3',
+    'sound/sfx/reload-fast.ogg']);
   this.game.load.audio('zombie-groan', ['sound/sfx/zombie_groan.mp3',
     'sound/sfx/zombie_groan.ogg']);
 
@@ -74,7 +74,7 @@ AAO.Preloader.prototype.preload = function() {
   this.game.load.spritesheet(
       'restart-button',
       'img/game-over-restart-button.png',
-      258, 97);
+      253 , 97);
 
   // Load fonts
   this.load.bitmapFont('juice-regular', 'fonts/juice-regular.png',
