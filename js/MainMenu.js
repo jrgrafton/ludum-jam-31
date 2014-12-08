@@ -14,8 +14,8 @@ AAO.MainMenu.prototype.create = function() {
   this.menuMusic_.play('',0,1,true);
   this.buttonClick_ = this.game.add.audio('select');
 
-  this.clouds_.push(this.game.add.image(this.game.width/2,this.game.height,"smoke-test"));
-  this.clouds_.push(this.game.add.image(-640,0,"smoke-test"));
+  this.clouds_.push(this.game.add.image(this.game.width/2,this.game.height,"smoke"));
+  this.clouds_.push(this.game.add.image(-640,0,"smoke"));
 
   // Inverse first cloud
   this.clouds_[0].anchor.setTo(.5, 1);
