@@ -60,7 +60,8 @@ AAO.Preloader.prototype.preload = function() {
     ['sound/sfx/rewind.mp3','sound/sfx/rewind.ogg']);
   this.game.load.audio('rewind',
     ['sound/sfx/rewind.mp3','sound/sfx/rewind.ogg']);
-  this.game.load.audio('select', ['sound/sfx/select.wav']);
+  this.game.load.audio('select', ['sound/sfx/radio.mp3',
+    'sound/sfx/radio.ogg']);
   this.game.load.audio('reload', ['sound/sfx/reload-fast.mp3',
     'sound/sfx/reload-fast.ogg']);
   this.game.load.audio('zombie-groan', ['sound/sfx/zombie_groan.mp3',
