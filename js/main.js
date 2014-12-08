@@ -1,6 +1,3 @@
-document.addEventListener('ready', function(){
-	document.body.className = 'ready';
-});
 window.addEventListener('load',function() {
   window.DEBUG = false;
 
