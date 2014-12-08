@@ -98,7 +98,6 @@ AAO.Game.prototype.addText_ = function() {
     this.game.world.centerY,
     'juice-regular',
     'RESCUE HAS ARRIVED!\n',
-    //'000000000000000000000',
   48);
   this.gameWonText_.visible = false;
 
@@ -107,7 +106,6 @@ AAO.Game.prototype.addText_ = function() {
     this.game.world.centerY,
     'juice-regular',
     'Zombies killed:396\nBullets fired:483\nAccuracy:64%',
-    //'0000000 0000000:396\n0000000 00000:483\n00000000:64%',
   25);
   this.gameStatsText_.visible = false;
 }
@@ -215,10 +213,17 @@ AAO.Game.prototype.gameOver = function(gameWon) {
         this.gameStatsText_.scale =
           {x: 1 / this.worldScale_, y:1 / this.worldScale_}
 
+        if(this.gameDirector_.zombiesKilled === 0) {
+          var accuracy = 0;
+        } else{
+          var accuracy = (100 / this.gameDirector_.bulletsFired * this.gameDirector_.zombiesKilled).toFixed(2);
+        }
+
         this.gameStatsText_.x = this.game.world.centerX - this.gameStatsText_.width / 2;
-        console.log()
-
-
+        this.gameStatsText_.text =
+            "Zombies killed:" + this.gameDirector_.zombiesKilled + "\n" +
+            "Bullets fired:" + this.gameDirector_.bulletsFired + "\n" +
+            "Accuracy:" + accuracy + "%";
 
         this.gameWonText_.visible = true;
         this.gameStatsText_.visible = true;

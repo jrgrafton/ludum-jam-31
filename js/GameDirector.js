@@ -18,8 +18,8 @@ AAO.GameDirector = function(gameState, entityGroup) {
 
   // Public properties
   this.gameTime = null;
-  this.zombieKills = 0;
-  this.bulletsShot = 0;
+  this.zombiesKilled = 0;
+  this.bulletsFired = 0;
 
   // Groups
   this.mobileZombiesGroup_ =  null;
@@ -30,10 +30,10 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.playerGroup_ = null;
 
   // Psuedo static vars
-  this.TOTAL_GAME_TIME = 1000// * 60 * 5; // 5 minutes
+  this.TOTAL_GAME_TIME = 1000 * 60 * 5; // 5 minutes
   this.ZOMBIE_INITIAL_STATIC_COUNT = 50;
   this.ZOMBIE_STATIC_ANIMATION_SPEED = 4;
-  this.ZOMBIE_MOBILE_SPEED = //0.8;
+  this.ZOMBIE_MOBILE_SPEED = 0.8;
   this.ZOMBIE_INITIAL_MOBILE_COUNT = 25;
   this.ZOMBIE_MOBILE_ANIMATION_SPEED = 6;
   this.ZOMBIE_MOBILE_ANIMATION_DYING_SPEED = 6;
@@ -229,8 +229,8 @@ AAO.GameDirector.prototype.renderDebug_ = function() {
   this.game_.debug.text('bullets: ' + this.gunAmmo_, 32, 60);
   this.game_.debug.text('reloading: '
     + "" + ((this.gunReloading_)? 1 : 0), 32, 80);
-  this.game_.debug.text('zombie kills: ' + this.zombieKills, 32, 100);
-  this.game_.debug.text('bullets shot: ' + this.bulletsShot, 32, 120);
+  this.game_.debug.text('zombie kills: ' + this.zombiesKilled, 32, 100);
+  this.game_.debug.text('bullets shot: ' + this.bulletsFired, 32, 120);
 
   this.game_.debug.body(this.player_);
   this.mobileZombiesGroup_.forEachAlive(function(zombie) {
@@ -382,7 +382,7 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
 
     this.clipSprites_[this.gunAmmo_ - 1].animations.play("empty");
     --this.gunAmmo_;
-    ++this.bulletsShot;
+    ++this.bulletsFired;
   }
 }
 
@@ -398,7 +398,7 @@ AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
   this.mobileZombiesGroup_.removeChild(zombie);
   this.deadZombiesGroup_.addChild(zombie);
   projectile.kill();
-  ++this.zombieKills
+  ++this.zombiesKilled
   this.spawnMobileZombie_();
   this.sfx_["gunshot-hit"].play();
 }
@@ -437,8 +437,8 @@ AAO.GameDirector.prototype.resetState = function() {
   this.deadZombiesGroup_.removeAll();
   this.mobileZombiesGroup_.removeAll();
   this.spawnMobileZombies_();
-  this.zombieKills = 0;
-  this.bulletsShot = 0;
+  this.zombiesKilled = 0;
+  this.bulletsFired = 0;
 
   // Reset game time
   this.gameTime = this.TOTAL_GAME_TIME;
