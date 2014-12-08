@@ -311,7 +311,8 @@ AAO.GameDirector.prototype.updateZombies_ = function() {
   // Chance to spawn zombies doubles by end
   this.zombieActivationChance =
     this.ZOMBIE_BASE_ACTIVATION_CHANCE
-    * (1 * ((1 / this.gameTime * this.TOTAL_GAME_TIME) - 0.5));
+    + (this.ZOMBIE_BASE_ACTIVATION_CHANCE / 2)
+    * ((1 / (this.gameTime + 1) * this.TOTAL_GAME_TIME) - 1);
 }
 
 AAO.GameDirector.prototype.activateZombie_ = function(zombie) {
