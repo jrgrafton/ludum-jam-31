@@ -97,9 +97,9 @@ AAO.Game.prototype.addText_ = function() {
     this.game.world.centerX,
     this.game.world.centerY,
     'juice-regular',
-    'Against All Odds... \n',
+    'RESCUE HAS ARRIVED!\n',
     //'000000000000000000000',
-  60);
+  48);
   this.gameWonText_.visible = false;
 
   this.gameStatsText_ = this.game.add.bitmapText(
@@ -108,7 +108,7 @@ AAO.Game.prototype.addText_ = function() {
     'juice-regular',
     'Zombies killed:396\nBullets fired:483\nAccuracy:64%',
     //'0000000 0000000:396\n0000000 00000:483\n00000000:64%',
-  26);
+  25);
   this.gameStatsText_.visible = false;
 }
 
