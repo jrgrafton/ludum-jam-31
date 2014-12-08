@@ -378,6 +378,7 @@ AAO.GameDirector.prototype.reloadGun_ = function() {
 
 AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
   zombie.animations.play("dying", this.ZOMBIE_MOBILE_ANIMATION_DYING_SPEED);
+  zombie.angle += Math.random() * 200 - 10;
   zombie.body.destroy();
   this.mobileZombiesGroup_.removeChild(zombie);
   this.deadZombiesGroup_.addChild(zombie);
