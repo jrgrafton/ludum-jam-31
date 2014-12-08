@@ -1,3 +1,6 @@
+document.addEventListener('ready', function(){
+	document.body.className = 'ready';
+});
 window.addEventListener('load',function() {
   window.DEBUG = false;
 
@@ -25,7 +28,7 @@ window.addEventListener('load',function() {
   game.state.add('Game', AAO.Game);
 
   // start the Boot state
-  game.state.start('Boot');
+  game.state.start('Boot');  
 });
 
 function render() {
