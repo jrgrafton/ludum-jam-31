@@ -125,9 +125,9 @@ AAO.GameDirector.prototype.setupPhysics_ = function() {
 }
 
 AAO.GameDirector.prototype.setupTimer_ = function() {
-  timer = this.game_.time.create(false);
-  timer.loop(1000, this.updateTime_.bind(this), this);
-  timer.start();
+  this.timer_ = this.game_.time.create(false);
+  this.timer_.loop(1000, this.updateTime_.bind(this), this);
+  this.timer_.start();
 }
 
 AAO.GameDirector.prototype.spawnPlayer_ = function() {
@@ -251,6 +251,7 @@ AAO.GameDirector.prototype.updatePlayer_ = function() {
 }
 
 AAO.GameDirector.prototype.updateTime_ = function() {
+  console.log("update time");
   var minutes = Math.floor(this.gameTime / (60 * 1000));
   var seconds = (this.gameTime % (60 * 1000)) / 1000;
 
@@ -390,6 +391,8 @@ AAO.GameDirector.prototype.pauseState_ = function() {
   this.mobileZombiesGroup_.forEach(function(zombie) {
     zombie.animations.currentAnim.paused = true;
   });
+  // Stop timer
+  this.timer_.stop();
 }
 
 AAO.GameDirector.prototype.resumeState = function() {
@@ -400,6 +403,9 @@ AAO.GameDirector.prototype.resumeState = function() {
   for(var i = 0; i < this.clipSprites_.length; i++) {
     this.clipSprites_[i].animations.play("full");
   }
+
+  // Start timer
+  this.setupTimer_();
 }
 
 AAO.GameDirector.prototype.resetState = function() {
@@ -412,4 +418,7 @@ AAO.GameDirector.prototype.resetState = function() {
 
   // Reset game time
   this.gameTime = this.TOTAL_GAME_TIME;
+  var minutes = Math.floor(this.gameTime / (60 * 1000));
+  var seconds = (this.gameTime % (60 * 1000)) / 1000;
+  this.gameTimeText_.text = (minutes < 10 ? "0" : "") + minutes + ":" + ("0" + seconds).slice(-2);
 }

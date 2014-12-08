@@ -169,7 +169,7 @@ AAO.Game.prototype.gameOver = function() {
     // Game time for game over overlay
     var minutes = Math.floor(this.gameDirector_.gameTime / (60 * 1000));
     var seconds = (this.gameDirector_.gameTime % (60 * 1000)) / 1000;
-    this.gameTimeTextGameOver_.text = minutes + ":" + ("0" + seconds).slice(-2);;
+    this.gameTimeTextGameOver_.text = minutes + ":" + ("0" + (seconds + 1)).slice(-2);;
     this.gameTimeTextGameOver_.scale =
         {x: 1 / this.worldScale_, y:1 / this.worldScale_}
     this.gameTimeTextGameOver_.x =

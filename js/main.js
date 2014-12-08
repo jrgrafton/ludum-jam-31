@@ -3,7 +3,7 @@ window.addEventListener('load',function() {
 
   // Turn off logging when not in debugging
   if(!window.DEBUG) {
-    console.log = function() {}
+    //console.log = function() {}
     console.debug = function() {}
     console.info = function() {}
   }
