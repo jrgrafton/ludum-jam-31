@@ -30,7 +30,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.playerGroup_ = null;
 
   // Psuedo static vars
-  this.TOTAL_GAME_TIME = 1000 * 60 * 5; // 5 minutes
+  this.TOTAL_GAME_TIME = 5000 //* 60 * 5; // 5 minutes
   this.ZOMBIE_INITIAL_STATIC_COUNT = 50;
   this.ZOMBIE_STATIC_ANIMATION_SPEED = 4;
   this.ZOMBIE_MOBILE_SPEED = 0.8;
@@ -260,16 +260,16 @@ AAO.GameDirector.prototype.updatePlayer_ = function() {
 }
 
 AAO.GameDirector.prototype.updateTime_ = function() {
+  if(this.gameTime === 0) {
+    this.pauseState_();
+    this.gameState_.gameOver(true);
+  }
+
   var minutes = Math.floor(this.gameTime / (60 * 1000));
   var seconds = (this.gameTime % (60 * 1000)) / 1000;
 
   this.gameTime -= 1000;
   this.gameTimeText_.text = (minutes < 10 ? "0" : "") + minutes + ":" + ("0" + seconds).slice(-2);
-
-  if(this.gameTime === 0) {
-    this.pauseState_();
-    this.gameState_.gameOver(true);
-  }
 }
 
 AAO.GameDirector.prototype.updateCollisions_ = function() {

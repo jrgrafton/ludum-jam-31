@@ -258,6 +258,8 @@ AAO.Game.prototype.gameOverRestart_ = function() {
   this.gameOverOverlay_.visible = false;
   this.gameTimeTextGameOver_.visible = false;
   this.restartButton_.visible = false;
+  this.gameWonText_.visible = false;
+  this.gameStatsText_.visible = false;
 
   // Terrible hack - phaser doesn't seem to correctly reset button state after
   // our custom zooming
