@@ -25,7 +25,7 @@ window.addEventListener('load',function() {
   game.state.add('Game', AAO.Game);
 
   // start the Boot state
-  game.state.start('Boot');
+  game.state.start('Boot');  
 });
 
 function render() {

@@ -14,6 +14,10 @@ AAO.Game = function(game){
 
   this.restartButton_ = null;
 
+
+  this.gameWonText_ = null;
+  this.gameStatsText_ = null;
+
   this.GAME_OVER_ZOOM_LEVEL = 5;
   this.GAME_OVER_ANIMATION_TIME = 2539;
 };
@@ -85,8 +89,25 @@ AAO.Game.prototype.addText_ = function() {
     this.game.world.centerY,
     'juice-regular',
     '5:00',
-  60);
+  120);
   this.gameTimeTextGameOver_.visible = false;
+
+
+  this.gameWonText_ = this.game.add.bitmapText(
+    this.game.world.centerX,
+    this.game.world.centerY,
+    'juice-regular',
+    'RESCUE HAS ARRIVED!\n',
+  48);
+  this.gameWonText_.visible = false;
+
+  this.gameStatsText_ = this.game.add.bitmapText(
+    this.game.world.centerX,
+    this.game.world.centerY,
+    'juice-regular',
+    'Zombies killed:396\nBullets fired:483\nAccuracy:64%',
+  25);
+  this.gameStatsText_.visible = false;
 }
 
 AAO.Game.prototype.addButtons_ = function() {
@@ -145,7 +166,7 @@ AAO.Game.prototype.manageResume_ = function() {
 AAO.Game.prototype.reset_ = function() {
   console.debug("Game.reset_()");
 };
-AAO.Game.prototype.gameOver = function() {
+AAO.Game.prototype.gameOver = function(gameWon) {
   console.debug("Game.gameOver()");
   if(this.gameOver_) return;
 
@@ -162,25 +183,51 @@ AAO.Game.prototype.gameOver = function() {
   }.bind(this));
 
   tween.onComplete.add(function() {
-    this.gameOverOverlay_.scale =
-        {x: 1 / this.worldScale_, y:1 / this.worldScale_}
-    this.gameOverOverlay_.x =
-        this.game.world.centerX - this.gameOverOverlay_.width/2;
-    this.gameOverOverlay_.y =
-        this.game.world.centerY - this.gameOverOverlay_.height/2;
-    this.gameOverOverlay_.visible = true;
+    if(!gameWon) {
+      this.gameOverOverlay_.scale =
+          {x: 1 / this.worldScale_, y:1 / this.worldScale_}
+      this.gameOverOverlay_.x =
+          this.game.world.centerX - this.gameOverOverlay_.width/2;
+      this.gameOverOverlay_.y =
+          this.game.world.centerY - this.gameOverOverlay_.height/2;
+      this.gameOverOverlay_.visible = true;
 
-    // Game time for game over overlay
-    var minutes = Math.floor(this.gameDirector_.gameTime / (60 * 1000));
-    var seconds = (this.gameDirector_.gameTime % (60 * 1000)) / 1000;
-    this.gameTimeTextGameOver_.text = minutes + ":" + ("0" + (seconds + 1)).slice(-2);;
-    this.gameTimeTextGameOver_.scale =
-        {x: 1 / this.worldScale_, y:1 / this.worldScale_}
-    this.gameTimeTextGameOver_.x =
-        this.game.world.centerX - this.gameTimeTextGameOver_.width/2;
-    this.gameTimeTextGameOver_.y =
-        this.game.world.centerY - this.gameTimeTextGameOver_.height/2;
-    this.gameTimeTextGameOver_.visible = true;
+      // Game time for game over overlay
+      var minutes = Math.floor(this.gameDirector_.gameTime / (60 * 1000));
+      var seconds = (this.gameDirector_.gameTime % (60 * 1000)) / 1000;
+      this.gameTimeTextGameOver_.text = minutes + ":" + ("0" + (seconds + 1)).slice(-2);;
+      this.gameTimeTextGameOver_.scale =
+          {x: 1 / this.worldScale_, y:1 / this.worldScale_}
+      this.gameTimeTextGameOver_.x =
+          this.game.world.centerX - this.gameTimeTextGameOver_.width/2;
+      this.gameTimeTextGameOver_.y =
+          this.game.world.centerY - this.gameTimeTextGameOver_.height/2;
+      this.gameTimeTextGameOver_.visible = true;
+    } else {
+        this.gameWonText_.scale =
+          {x: 1 / this.worldScale_, y:1 / this.worldScale_}
+
+        this.gameWonText_.x = this.game.world.centerX - this.gameWonText_.width / 2;
+        this.gameWonText_.y = this.game.world.centerY - this.gameWonText_.height * 2;
+
+        this.gameStatsText_.scale =
+          {x: 1 / this.worldScale_, y:1 / this.worldScale_}
+
+        if(this.gameDirector_.zombiesKilled === 0) {
+          var accuracy = 0;
+        } else{
+          var accuracy = (100 / this.gameDirector_.bulletsFired * this.gameDirector_.zombiesKilled).toFixed(2);
+        }
+
+        this.gameStatsText_.x = this.game.world.centerX - this.gameStatsText_.width / 2;
+        this.gameStatsText_.text =
+            "Zombies killed:" + this.gameDirector_.zombiesKilled + "\n" +
+            "Bullets fired:" + this.gameDirector_.bulletsFired + "\n" +
+            "Accuracy:" + accuracy + "%";
+
+        this.gameWonText_.visible = true;
+        this.gameStatsText_.visible = true;
+    }
 
     // Restart button
     this.restartButton_.scale =
@@ -211,6 +258,8 @@ AAO.Game.prototype.gameOverRestart_ = function() {
   this.gameOverOverlay_.visible = false;
   this.gameTimeTextGameOver_.visible = false;
   this.restartButton_.visible = false;
+  this.gameWonText_.visible = false;
+  this.gameStatsText_.visible = false;
 
   // Terrible hack - phaser doesn't seem to correctly reset button state after
   // our custom zooming

@@ -12,12 +12,14 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.entityGroup_ = entityGroup;
   this.gameTimeText_ = null;
   this.gameTimeTextGameOver_ = null;
-  this.zombieKills_ = 0;
   this.sfx_ = null;
   this.clipSprites_ = [];
+  this.zombieActivationChance = null;
 
   // Public properties
   this.gameTime = null;
+  this.zombiesKilled = 0;
+  this.bulletsFired = 0;
 
   // Groups
   this.mobileZombiesGroup_ =  null;
@@ -28,7 +30,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.playerGroup_ = null;
 
   // Psuedo static vars
-  this.TOTAL_GAME_TIME = 1000 * 60 * 5; // 5 minutes
+  this.TOTAL_GAME_TIME = 5000 //* 60 * 5; // 5 minutes
   this.ZOMBIE_INITIAL_STATIC_COUNT = 50;
   this.ZOMBIE_STATIC_ANIMATION_SPEED = 4;
   this.ZOMBIE_MOBILE_SPEED = 0.8;
@@ -36,7 +38,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.ZOMBIE_MOBILE_ANIMATION_SPEED = 6;
   this.ZOMBIE_MOBILE_ANIMATION_DYING_SPEED = 6;
   this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
-  this.ZOMBIE_ACTIVATION_CHANCE = 2.0; // Per second chance
+  this.ZOMBIE_BASE_ACTIVATION_CHANCE = 1.4; // Per second chance
 
   this.GUN_BULLET_SPEED = 1000; // Pixels per second
   this.GUN_COCK_SPEED = 50; // Min number of ms between shots
@@ -51,6 +53,7 @@ AAO.GameDirector.prototype.init = function() {
   this.lastUpdate_ = new Date().getTime();
   this.lastShot_ = new Date().getTime();
   this.gameTime = this.TOTAL_GAME_TIME;
+  this.zombie_activation_chance = this.ZOMBIE_BASE_ACTIVATION_CHANCE;
   this.setupGroups_();
   this.addText_();
   this.addAudio_();
@@ -226,7 +229,8 @@ AAO.GameDirector.prototype.renderDebug_ = function() {
   this.game_.debug.text('bullets: ' + this.gunAmmo_, 32, 60);
   this.game_.debug.text('reloading: '
     + "" + ((this.gunReloading_)? 1 : 0), 32, 80);
-  this.game_.debug.text('zombie kills: ' + this.zombieKills_, 32, 100);
+  this.game_.debug.text('zombie kills: ' + this.zombiesKilled, 32, 100);
+  this.game_.debug.text('bullets shot: ' + this.bulletsFired, 32, 120);
 
   this.game_.debug.body(this.player_);
   this.mobileZombiesGroup_.forEachAlive(function(zombie) {
@@ -256,11 +260,16 @@ AAO.GameDirector.prototype.updatePlayer_ = function() {
 }
 
 AAO.GameDirector.prototype.updateTime_ = function() {
+  if(this.gameTime === 0) {
+    this.pauseState_();
+    this.gameState_.gameOver(true);
+  }
+
   var minutes = Math.floor(this.gameTime / (60 * 1000));
   var seconds = (this.gameTime % (60 * 1000)) / 1000;
 
   this.gameTime -= 1000;
-  this.gameTimeText_.text = (minutes < 10 ? "0" : "") + minutes + ":" + ("0" + seconds).slice(-2);;
+  this.gameTimeText_.text = (minutes < 10 ? "0" : "") + minutes + ":" + ("0" + seconds).slice(-2);
 }
 
 AAO.GameDirector.prototype.updateCollisions_ = function() {
@@ -294,10 +303,15 @@ AAO.GameDirector.prototype.updateZombies_ = function() {
 
   // Activate zombies
   var timeSinceLastUpdate = new Date().getTime() - this.lastUpdate_;
-  if((timeSinceLastUpdate / 1000) * this.ZOMBIE_ACTIVATION_CHANCE
+  if((timeSinceLastUpdate / 1000) * this.zombieActivationChance
       > Math.random()) {
     this.activateZombie_()
   }
+
+  // Chance to spawn zombies doubles by end
+  this.zombieActivationChance =
+    this.ZOMBIE_BASE_ACTIVATION_CHANCE
+    * (1 * (1 / this.gameTime * this.TOTAL_GAME_TIME));
 }
 
 AAO.GameDirector.prototype.activateZombie_ = function(zombie) {
@@ -368,6 +382,7 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
 
     this.clipSprites_[this.gunAmmo_ - 1].animations.play("empty");
     --this.gunAmmo_;
+    ++this.bulletsFired;
   }
 }
 
@@ -378,18 +393,19 @@ AAO.GameDirector.prototype.reloadGun_ = function() {
 
 AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
   zombie.animations.play("dying", this.ZOMBIE_MOBILE_ANIMATION_DYING_SPEED);
+  zombie.angle += Math.random() * 200 - 10;
   zombie.body.destroy();
   this.mobileZombiesGroup_.removeChild(zombie);
   this.deadZombiesGroup_.addChild(zombie);
   projectile.kill();
-  ++this.zombieKills_
+  ++this.zombiesKilled
   this.spawnMobileZombie_();
   this.sfx_["gunshot-hit"].play();
 }
 
 AAO.GameDirector.prototype.zombieHitPlayer_ = function(player, zombie) {
   this.pauseState_();
-  this.gameState_.gameOver();
+  this.gameState_.gameOver(false);
 }
 
 AAO.GameDirector.prototype.pauseState_ = function() {
@@ -421,6 +437,8 @@ AAO.GameDirector.prototype.resetState = function() {
   this.deadZombiesGroup_.removeAll();
   this.mobileZombiesGroup_.removeAll();
   this.spawnMobileZombies_();
+  this.zombiesKilled = 0;
+  this.bulletsFired = 0;
 
   // Reset game time
   this.gameTime = this.TOTAL_GAME_TIME;

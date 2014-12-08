@@ -5,7 +5,7 @@ html, body {
   margin: 0px;
   width: 100%;
   height: 100%;
-  background-color: black;
+  background-color: #050905;
 }
 
 /*******************/
@@ -14,14 +14,9 @@ html, body {
 body .background {
   width: 100%;
   height: 100%;
-  opacity: 0;
   position: absolute;
-  z-index: 0;
-  transition: opacity 0.5s ease-in;
-}
-
-body.ready .background {
   opacity: 1.0;
+  background: url(../img/tv.jpg) no-repeat center center;
 }
 
 body .container {
@@ -38,9 +33,21 @@ body .container #game {
   height: 100%;
   display: table-cell;
   vertical-align: middle;
-  
+  position: relative;
+  top: 10px;
 }
 
 body .container #game canvas {
   margin: 0 auto;
+}
+
+body .container #game .screen {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 2;
+	background: rgba(82,223,82,0.05);
+	pointer-events: none;
 }
