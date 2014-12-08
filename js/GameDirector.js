@@ -30,7 +30,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.playerGroup_ = null;
 
   // Psuedo static vars
-  this.TOTAL_GAME_TIME = 5000 //* 60 * 5; // 5 minutes
+  this.TOTAL_GAME_TIME = 1000 * 60 * 5; // 5 minutes
   this.ZOMBIE_INITIAL_STATIC_COUNT = 50;
   this.ZOMBIE_STATIC_ANIMATION_SPEED = 4;
   this.ZOMBIE_MOBILE_SPEED = 0.8;
@@ -311,7 +311,7 @@ AAO.GameDirector.prototype.updateZombies_ = function() {
   // Chance to spawn zombies doubles by end
   this.zombieActivationChance =
     this.ZOMBIE_BASE_ACTIVATION_CHANCE
-    * (1 * (1 / this.gameTime * this.TOTAL_GAME_TIME));
+    * (1 * ((1 / this.gameTime * this.TOTAL_GAME_TIME) - 0.5));
 }
 
 AAO.GameDirector.prototype.activateZombie_ = function(zombie) {
@@ -395,6 +395,7 @@ AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
   zombie.animations.play("dying", this.ZOMBIE_MOBILE_ANIMATION_DYING_SPEED);
   zombie.angle += Math.random() * 200 - 10;
   zombie.body.destroy();
+  zombie.cacheAsBitmap = true;
   this.mobileZombiesGroup_.removeChild(zombie);
   this.deadZombiesGroup_.addChild(zombie);
   projectile.kill();
