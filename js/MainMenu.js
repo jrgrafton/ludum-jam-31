@@ -9,9 +9,6 @@ AAO.MainMenu = function(game){
 AAO.MainMenu.prototype.create = function() {
   // Add sprite and button
   this.game.add.sprite(0, 0, "menu-background");
-  this.add.button(this.game.world.centerX,
-        this.game.world.centerY + 200, 'start-button',
-        this.startGame_.bind(this), this, 1, 0, 1, 1).anchor.setTo(0.5);
 
   this.menuMusic_ = this.game.add.audio('menu-background');
   this.menuMusic_.play('',0,1,true);
@@ -41,6 +38,11 @@ AAO.MainMenu.prototype.create = function() {
       0,
       -1,
       true);
+
+  // Add button
+  this.add.button(this.game.world.centerX,
+      this.game.world.centerY + 200, 'start-button',
+      this.startGame_.bind(this), this, 1, 0, 1, 1).anchor.setTo(0.5);
 };
 
 AAO.MainMenu.prototype.startGame_ = function() {
