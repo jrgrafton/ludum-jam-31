@@ -42,6 +42,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.GUN_COCK_SPEED = 50; // Min number of ms between shots
   this.GUN_RELOAD_TIME = 200;
   this.GUN_CLIP_SIZE = 7;
+  this.GUN_BULLET_POOL_SIZE = 100;
 
   this.PLAYER_ANIMATION_SPEED = 24;
 }
@@ -119,7 +120,11 @@ AAO.GameDirector.prototype.setupPhysics_ = function() {
   this.playerGroup_.physicsBodyType = Phaser.Physics.ARCADE;
   this.playerGroup_.enableBody = true;
 
-  this.projectilesGroup_.createMultiple(50, 'bullet');
+  this.projectilesGroup_.createMultiple(
+      this.GUN_BULLET_POOL_SIZE,
+      'bullet',
+      0,
+      false);
   this.projectilesGroup_.setAll('checkWorldBounds', true);
   this.projectilesGroup_.setAll('outOfBoundsKill', true);
 }
@@ -342,6 +347,7 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
     }
 
     var bullet = this.projectilesGroup_.getFirstDead();
+    if(bullet === null) return; // Should never happen
     bullet.reset(this.game_.world.centerX, this.game_.world.centerY);
     bullet.anchor.set(0.5);
 
@@ -409,8 +415,9 @@ AAO.GameDirector.prototype.resumeState = function() {
 
 AAO.GameDirector.prototype.resetState = function() {
   // Reset entity groups
-  this.projectilesGroup_.removeAll();
-  this.projectilesGroup_.createMultiple(50, 'bullet');
+  this.projectilesGroup_.forEach(function(projectile){
+    projectile.kill();
+  });
   this.deadZombiesGroup_.removeAll();
   this.mobileZombiesGroup_.removeAll();
   this.spawnMobileZombies_();
