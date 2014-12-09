@@ -24,7 +24,6 @@ AAO.Game = function(game){
 
 AAO.Game.prototype.create = function() {
   console.debug("Game.create()");
-  this.game.add.plugin(Phaser.Plugin.Debug);
 
   // Initialise physics
   this.game.physics.startSystem(Phaser.Physics.ARCADE);
