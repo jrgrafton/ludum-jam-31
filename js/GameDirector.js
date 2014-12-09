@@ -384,6 +384,11 @@ AAO.GameDirector.prototype.updateProjectiles_ = function() {
     this.clipSprites_[this.gunAmmo_ - 1].animations.play("empty");
     --this.gunAmmo_;
     ++this.bulletsFired;
+
+
+    if(window.ga) {
+      ga('send', 'event', 'game', 'bullet-fired');
+    }
   }
 }
 
@@ -403,6 +408,10 @@ AAO.GameDirector.prototype.projectileHitZombie_ = function(projectile, zombie) {
   ++this.zombiesKilled
   this.spawnMobileZombie_();
   this.sfx_["gunshot-hit"].play();
+
+  if(window.ga) {
+    ga('send', 'event', 'game', 'zombie-killed');
+  }
 }
 
 AAO.GameDirector.prototype.zombieHitPlayer_ = function(player, zombie) {
