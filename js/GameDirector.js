@@ -30,7 +30,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.playerGroup_ = null;
 
   // Psuedo static vars
-  this.TOTAL_GAME_TIME = 1000 * 60 * 5; // 5 minutes
+  this.TOTAL_GAME_TIME = 1000 * 60 * 3; // 5 minutes
   this.ZOMBIE_INITIAL_STATIC_COUNT = 50;
   this.ZOMBIE_STATIC_ANIMATION_SPEED = 4;
   this.ZOMBIE_MOBILE_SPEED = 0.8;
@@ -87,7 +87,7 @@ AAO.GameDirector.prototype.addAmmo_ = function() {
 
 AAO.GameDirector.prototype.addText_ = function() {
   this.gameTimeText_ = this.game_.add.bitmapText(45, 50,
-        'juice-regular','05:00', 48);
+        'juice-regular','03:00', 48);
 }
 
 AAO.GameDirector.prototype.addAudio_ = function() {
