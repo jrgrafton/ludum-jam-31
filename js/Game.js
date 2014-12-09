@@ -14,10 +14,11 @@ AAO.Game = function(game){
 
   this.restartButton_ = null;
 
-
   this.gameWonText_ = null;
   this.gameStatsText_ = null;
 
+  this.retryCount_ = 0;
+  
   this.GAME_OVER_ZOOM_LEVEL = 5;
   this.GAME_OVER_ANIMATION_TIME = 2539;
 };
@@ -53,6 +54,10 @@ AAO.Game.prototype.create = function() {
     this.game.height);
   this.game.world.pivot.x = this.game.width / 2;
   this.game.world.pivot.y = this.game.height / 2;
+
+  if(window.ga) {
+    ga('send', 'event', 'game', 'game-started');
+  }
 
   if(window.DEBUG) {
     this.game.time.advancedTiming = true;
@@ -203,6 +208,10 @@ AAO.Game.prototype.gameOver = function(gameWon) {
       this.gameTimeTextGameOver_.y =
           this.game.world.centerY - this.gameTimeTextGameOver_.height/2;
       this.gameTimeTextGameOver_.visible = true;
+
+      if(window.ga) {
+        ga('send', 'event', 'game', 'game-over', '', this.gameDirector_.gameTime);
+      }
     } else {
         this.gameWonText_.scale =
           {x: 1 / this.worldScale_, y:1 / this.worldScale_}
@@ -227,6 +236,10 @@ AAO.Game.prototype.gameOver = function(gameWon) {
 
         this.gameWonText_.visible = true;
         this.gameStatsText_.visible = true;
+
+        if(window.ga) {
+          ga('send', 'event', 'game', 'game-completed', '', accuracy);
+        }
     }
 
     // Restart button
@@ -299,4 +312,8 @@ AAO.Game.prototype.gameOverRestart_ = function() {
 
   // Play rewind SFX
   this.sfx_["rewind"].play();
+
+  if(window.ga) {
+    ga('send', 'event', 'game', 'game-retry', '', ++this.retryCount_);
+  }
 }
