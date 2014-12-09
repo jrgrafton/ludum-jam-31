@@ -1,5 +1,5 @@
 window.addEventListener('load',function() {
-  window.DEBUG = false;
+  window.DEBUG = window.location.href.indexOf("debug") !== -1;
 
   // Turn off logging when not in debugging
   if(!window.DEBUG) {
