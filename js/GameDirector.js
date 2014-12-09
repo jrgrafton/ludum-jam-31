@@ -87,7 +87,7 @@ AAO.GameDirector.prototype.addAmmo_ = function() {
 
 AAO.GameDirector.prototype.addText_ = function() {
   this.gameTimeText_ = this.game_.add.bitmapText(45, 50,
-        'juice-regular','05:00', 48);
+        'juice-regular','03:00', 48);
 }
 
 AAO.GameDirector.prototype.addAudio_ = function() {
