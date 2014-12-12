@@ -39,6 +39,7 @@ AAO.GameDirector = function(gameState, entityGroup) {
   this.ZOMBIE_MOBILE_ANIMATION_DYING_SPEED = 6;
   this.ZOMBIE_INITIAL_MOBILE_SPAWN_RADIUS = 350; // In pixels
   this.ZOMBIE_BASE_ACTIVATION_CHANCE = 1.5; // Per second chance
+  this.ZOMBIE_BASE_ACTIVATION_CHANCE_MULTIPLE_BY_END = 2.0; // Multiples of activatation chance to reach by the end
 
   this.GUN_BULLET_SPEED = 1000; // Pixels per second
   this.GUN_COCK_SPEED = 50; // Min number of ms between shots
@@ -63,6 +64,20 @@ AAO.GameDirector.prototype.init = function() {
   this.spawnPlayer_();
   this.spawnZombies_();
   this.setupTimer_();
+}
+
+AAO.GameDirector.prototype.growthToOne_ = function(t,T,n) {
+  /**
+   *
+   * Growth function for additional activation chance
+   * 
+   * @t float	Current time
+   * @T float	Total time
+   * @n float	Degree
+   *	
+   **/
+  if (typeof(n) === "undefined") { n = 1; }
+  return Math.pow( t/T, n );
 }
 
 AAO.GameDirector.prototype.addAmmo_ = function() {
@@ -311,8 +326,8 @@ AAO.GameDirector.prototype.updateZombies_ = function() {
   // Chance to spawn zombies doubles by end
   this.zombieActivationChance =
     this.ZOMBIE_BASE_ACTIVATION_CHANCE
-    + (this.ZOMBIE_BASE_ACTIVATION_CHANCE)
-    * ((1 / (this.gameTime + 1) * this.TOTAL_GAME_TIME) - 1);
+      + ( this.ZOMBIE_BASE_ACTIVATION_CHANCE * (this.ZOMBIE_BASE_ACTIVATION_CHANCE_MULTIPLE_BY_END - 1) )
+        * this.growthToOne_( this.gameTime, this.TOTAL_GAME_TIME, 4 ); // Uses a cubic model to multiply the activation chance growth
 }
 
 AAO.GameDirector.prototype.activateZombie_ = function(zombie) {
